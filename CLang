@@ -1,0 +1,230 @@
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+struct:   structure that defines a new data type, with more than one member.
+
+struct [ structure tag ]
+		{
+			member def.
+			member def.
+			.
+			.
+		} [one or more strucutre variables]
+
+ex:
+
+struct Books
+{
+	char title[50];
+	char author[50];
+	char subject[100];
+	int book_id;
+} book;
+
++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+Pointers: Points to memory location which is accessed using (&)
+
+Define: A pointer is a variable whose value is the address of another variable.
+i.e. direct address of the memory location.
+
+ex:   type *var_name;
+
+type: pointers base type
+* : declares a pointer
+
+ex: 
+int *ip;
+ip = &var;
+---------------
+&var : address of var variable
+ip   : Address stored in ip variable
+*ip  : Value of *ip variable
+
+NULL pointers: done at time of variable declaration
+-Good practice to assign a NULL value to a pointer in case you do not have an exact
+address to be assigned.
+ex: int *ptr = NULL;
+- returns a 0
+-- points to nothing
+
+Checking for null pointer:
+if(ptr)   : succeeds if p is not null
+if(!ptr)  : succeeds if p is null
+
++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+Linked Lists: Function as an array that can grow and shrink as needed
+-Implemented using pointers
+-Items can be added or removed from the middle of the List
+-No need to define an initial size
+-No random access, meaning we must iterate over all items until we reach desired location
+-Dynamic memory allocation and pointers are required
+
+-Pointer always points to the next member of the list
+-If the pointer is null, than thats the last node in the list
+
+Define Linked List Node:
+----------------------------
+
+typedef struct node
+	{
+		int val;
+		struct node * next;
+	} node_t;
+
+Create local variable which points to the first item of list (head):
+--------------------------------------------------------------------
+
+node_t * head = NULL;
+head = malloc(sizeof(node_t));   //allocate memory with capacity of node_t
+if( head = NULL )
+	{
+		return 1;
+	}
+head->val = 1;    //sets the heads value as 1
+head->next = NULL;   //sets the heads next reference as null
+
+--Note in the if statement we check if malloc returned a NULL value or not (always)
+
+Adding variable to end of the list:
+----------------------------------
+node_t * head = NULL;
+head = malloc( sizeof( node_t ));
+head->val = 1; //sets heads value as 1
+head->next = malloc( sizeof( node_t ));
+head->next->val = 2;  //set heads next referenced value as 2
+head->next->next = NULL; //sets end of the list
+
+
+Iterating over a list: (Build function that prints out all items of a LL)
+---------------------------
+void print_list( node_t * head )
+{
+	node_t * current = head;
+
+	while( current != null ) //loops while not at end of list
+		{
+			printf(%d\n", current-val ); //prints current value
+			current = current->next;  //increments 
+		}
+}
+
+Adding an item to the end of the list: To iterate over all the members of the LL, we use 
+a pointer called 'current'. 
+--------------------------------------
+
+void push(node_t * head, int val )
+{
+	node_t * current = head;  //set current to start from the head, then advance to next
+	while( current->next != NULL )
+		{
+			current = current->next;
+		}
+	current->next = malloc( sizeof( node_t ));
+	current->next->val = val;
+	current->next->next = NULL;
+}
+
+Using Stacks and Queues-
+Adding an item to the beginning of the list: (push)
+----------------------------------------------------
+1. Create a new item and set its value
+2. Link the new item to point to the head of the list
+3. Set the head of the list to be our new item
+
+void push( node_t ** head, int val )
+{
+	node_t * new_node;   //created new node
+	new_node = malloc( sizeof( node_t ))  //allocated memory to new node
+
+	new_node->val = val;  //set new nodes value
+	new_node->next = *head; //linked new item to point to head of the list
+	*head = new_node;  //set the had of the list to be our new node
+}
+
+Removing the first item (pop):
+--------------------------------
+1. Take the next item that the head points to and save it
+2. Free the head item
+3. Set the head to be the next item that we've stored
+
+int pop( node_t ** head )
+{
+	int retVal = -1;
+	node_t * next_node = NULL;
+
+	if( *head == NULL )
+		{
+			return retVal;  //returns -1
+		}
+
+	next_node = ( *head )->next;
+	retVal = ( *head )->val; //saves the data head points to
+	free( *head );  //frees memory
+	*head = next_node;
+
+	return retVal;
+}
+
+Removing the last item of the list:
+-Similar to adding to end, but since we must change one item before the last item, we have to look
+two items ahead to see if the next item is the last one.
+--------------------------------------------------------------------------------
+
+int remove_last( node_t * head )
+{
+	int retVal = 0;
+
+	if( head->next == NULL ) //if thee is one item in list, remove it
+		{
+			retVal = head->val; //set as heads value
+			free( head );
+			return retVal;
+		}
+	//get to second to last node in list
+	node_t * current = head;
+	while( current->next->next != NULL )
+		{
+			current = current->next;
+		}
+	//current points to the second to last item of list, so lets remove current->next
+	retVal = current->next->val;
+	free( current-> next );
+	current->next = NULL;
+	return retVal;
+}
+
+Removing a specific item:
+-------------------------------
+1. Iterate to the node before the node we wish to delete
+2. Save the node we wish to delete in a temp pointer
+3. Set the previous nodes next pointer to point to the node after the node we want to delete
+4. Delete the node using the temporary pointer
+
+int remove_by_index( node_t ** head, int n )
+{
+	int index = 0;
+	int retVal = -1;
+	node_t * current = *head;
+	node_t * temp_node = NULL;
+
+	if( n == 0 )
+		{
+			return pop( head );
+		}
+	
+	for ( index = 0; index < n - 1; index++ )
+		{
+			if( current->next == NULL )
+				{
+					return -1;
+				}
+				current = current->next;
+		}
+	temp_node = current->next;
+	retVal = temp_node->val;
+	current->next = temp_node->next;
+	free( temp_node );
+
+	return retVal;
+}
+
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++

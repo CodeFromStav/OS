@@ -1,0 +1,4 @@
+pwd  :shows which drive you're in
+
+git add .  :adds all files
+git commit -m "description" :commit to remote location

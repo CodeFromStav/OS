@@ -1,0 +1,20 @@
+CC = gcc
+DEBUG = -g
+CFLAGS = -Wall -std=c99 -pedantic -c $(DEBUG)
+LFLAGS = -Wall -std=c99 -pedantic $(DEBUG)
+
+configUploadProg : ConfigUploadMain.o ConfigAccess.o StringUtils.o
+	$(CC) $(LFLAGS) ConfigUploadMain.o ConfigAccess.o StringUtils.o -o configUploadProg
+
+
+ConfigUploadMain.o : ConfigUploadMain.c ConfigAccess.h
+	$(CC) $(CFLAGS) ConfigUploadMain.c
+
+ConfigAccess.o	: ConfigAccess.c ConfigAccess.h
+	$(CC) $(CFLAGS) ConfigAccess.c
+
+StringUtils.o : StringUtils.c StringUtils.h
+	$(CC) $(CFLAGS) StringUtils.c
+
+clean:
+	\rm *.o configUploadProg

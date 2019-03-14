@@ -1,0 +1,6 @@
+{
+	"files.associations": {
+		"configaccess.h": "c",
+		"metadataaccess.h": "c"
+	}
+}
