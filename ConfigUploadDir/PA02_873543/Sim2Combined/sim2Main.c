@@ -24,15 +24,13 @@ int main( int argc, char ** argv )
 
 
             
-       
-		printf("\nSimulator Program");
-		  
-      printf( "\nUploading Configuration Files\n" );
-	
-		printf("\nUploading Meta Data Files\n" );
-		
-		printf("==================");
-		printf( "\nBegin Simulation\n");
+         
+        printf( "\nSimulator Program" );
+        printf( "\n=================" );		  
+        printf( "\nUploading Configuration Files\n" );
+        printf( "\nUploading Meta Data Files" );
+        printf( "\n==================" );
+        printf( "\nBegin Simulation\n" );
 
 
         if( argc < 2 )
@@ -58,7 +56,7 @@ int main( int argc, char ** argv )
             }
 
  		printf( "\nMeta Data File Upload Program\n" );
-      printf( "=============================\n" );
+        printf( "=============================\n" );
 
       if( argc < 2 )
          {
@@ -74,9 +72,7 @@ int main( int argc, char ** argv )
 
       if( mdAccessResult == NO_ERR )
          {
-				//need to put in run simulator (call masterLoop)?
-                
-            
+            simRun(configDataPtr, mdData ); //this runs the simulation            
          }
       else
          {
@@ -89,7 +85,7 @@ int main( int argc, char ** argv )
 
             printf( "\n" );
 
-			stopLogging();
+			// stopLogging();
 
         return 0;
     }

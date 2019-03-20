@@ -13,13 +13,16 @@
 
 //runs the whole simulator
 
-void masterLoop(  ConfigDataType *configPtr, OpCodeType *currentPtr )
+void simRun(  ConfigDataType *configPtr, OpCodeType *currentPtr )
 {
 	char timeString[ MAX_STR_LEN ];
 
 	printf( "\nSystem Start")
 	//access at 0 timer
 	accessTimer( ZERO_TIMER, timeString );
+	//possibly a timeToString call
+	//void timeToString( int secTime, int uSecTime, char *timeStr )
+	//timeToString( , , timeString );
 
 	printf( "\nCreating Process Control Blocks")
 	//call function to create PCB
@@ -67,10 +70,14 @@ void masterLoop(  ConfigDataType *configPtr, OpCodeType *currentPtr )
 	printf( "%s", LinkedList->PID );
 	printf( " selected with ");
 	printf( "%d" , LinkedList->timeRemaining );
-	printf( " ms remainging\n" );
+	printf( " ms remaining\n" );
 
 	//ACCESS LAP TIMER
 	accessTimer( LAP_TIMER, timeString );
+
+
+	//set Process 0 to running state
+	LinkedList->stateOfProcess = RUNNING;
 
 	//"Process" + PID + "set in " + stateOfOperation + "state"
 	printf( "\n Process " );
@@ -81,6 +88,10 @@ void masterLoop(  ConfigDataType *configPtr, OpCodeType *currentPtr )
 
 	//ACCESS LAP TIMER
 	accessTimer( LAP_TIMER, timeString );
+
+
+
+	//loop
 
 }
 

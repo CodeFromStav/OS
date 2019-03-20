@@ -35,6 +35,7 @@ typedef struct PCB_LL
 
 
 
+void simRun(  ConfigDataType *configPtr, OpCodeType *currentPtr );
 
 void createPCB( ConfigDataType *configPtr, OpCodeType *currentPtr );
 void ProcessType ( ConfigDataType *configPtr, OpCodeType *currentPtr );
