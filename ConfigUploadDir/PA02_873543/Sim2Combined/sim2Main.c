@@ -74,7 +74,8 @@ int main( int argc, char ** argv )
 
       if( mdAccessResult == NO_ERR )
          {
-				//need to put in run simulator 
+				//need to put in run simulator (call masterLoop)?
+                
             
          }
       else

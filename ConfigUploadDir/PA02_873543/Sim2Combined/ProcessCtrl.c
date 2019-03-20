@@ -16,11 +16,6 @@
 void masterLoop(  ConfigDataType *configPtr, OpCodeType *currentPtr )
 {
 	char timeString[ MAX_STR_LEN ];
-	// char *strOne [ MAX_STR_LEN ];
-	// char *strTwo [ MAX_STR_LEN ];
-
-	// *strOne = ( char * )malloc ( sizeof( char ) );
-	// *strTwo = (char * ) malloc( sizeof( char ) );
 
 	printf( "\nSystem Start")
 	//access at 0 timer
@@ -28,7 +23,7 @@ void masterLoop(  ConfigDataType *configPtr, OpCodeType *currentPtr )
 
 	printf( "\nCreating Process Control Blocks")
 	//call function to create PCB
-	PCB_LL *LinkedList = createPCB( configPtr, currentPtr );
+	PCB_LL *LinkedList = createPCB( configPtr, currentPtr ); //function needs to create PCBS
 
 	//access timer LAP
 	accessTimer( LAP_TIMER, timeString );
@@ -87,11 +82,6 @@ void masterLoop(  ConfigDataType *configPtr, OpCodeType *currentPtr )
 	//ACCESS LAP TIMER
 	accessTimer( LAP_TIMER, timeString );
 
-	//free memory allocation
-	// free( strOne );
-	// free( strTwo );
-
-
 }
 
 
@@ -109,7 +99,7 @@ void masterLoop(  ConfigDataType *configPtr, OpCodeType *currentPtr )
 
 void createPCB( ConfigDataType *configPtr, OpCodeType *currentPtr )
 	{
-		PCB_LL *localRef =  malloc ( sizeof ( PCB_LL ) );
+		PCB_LL *localRef =  malloc ( sizeof ( PCB_LL ) ); //neeed to point to opCodeType
 		PCB_LL *headRef = localRef;
 
 		localRef->currentPtr;
