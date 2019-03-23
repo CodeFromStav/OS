@@ -3,8 +3,8 @@ DEBUG = -g
 CFLAGS = -Wall -std=c99 -pedantic -c $(DEBUG)
 LFLAGS = -Wall -std=c99 -pedantic $(DEBUG)
 
- sim02 : sim2Main.o MetaDataAccess.o ConfigAccess.o StringUtils.o ProcessCtrl.o simtimer.o
-	$(CC) $(LFLAGS) sim2Main.o MetaDataAccess.o ConfigAccess.o StringUtils.o ProcessCtrl.o simtimer.o -o sim02
+ runSim : sim2Main.o MetaDataAccess.o ConfigAccess.o StringUtils.o ProcessCtrl.o simtimer.o
+	$(CC) $(LFLAGS) sim2Main.o MetaDataAccess.o ConfigAccess.o StringUtils.o ProcessCtrl.o simtimer.o -o runSim
 
  sim2Main.o : sim2Main.c
 	$(CC) $(CFLAGS) sim2Main.c
@@ -27,4 +27,4 @@ LFLAGS = -Wall -std=c99 -pedantic $(DEBUG)
 
 
  clean:
-	\rm -f *.o sim02
+	\rm -f *.o runSim

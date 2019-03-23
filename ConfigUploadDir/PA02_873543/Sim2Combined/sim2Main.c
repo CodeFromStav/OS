@@ -26,7 +26,7 @@ int main( int argc, char ** argv )
             
          
         printf( "\nSimulator Program" );
-        printf( "\n=================" );		  
+        printf( "\n=================\n" );		  
         printf( "\nUploading Configuration Files\n" );
         printf( "\nUploading Meta Data Files" );
         printf( "\n==================" );
@@ -70,9 +70,10 @@ int main( int argc, char ** argv )
       copyString( mdFileName, configDataPtr->metaDataFileName );
       mdAccessResult = getOpCodes( mdFileName, &mdData ); //accesses the opCodes
 
-      if( mdAccessResult == NO_ERR )
+      if( mdAccessResult == NO_ERR ) //runs the simulation
          {
-            simRun(configDataPtr, mdData ); //this runs the simulation            
+            simRun(configDataPtr, mdData ); //this runs the simulation      
+            //displayMetaData( mdData );      
          }
       else
          {

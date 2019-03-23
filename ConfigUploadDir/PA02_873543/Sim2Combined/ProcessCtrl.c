@@ -2,6 +2,7 @@
 #include "MetaDataAccess.h"
 #include "ProcessCtrl.h"
 #include "simtimer.h"
+#include <pthread.h>
 
 
 //OpCodeType *LL_headNodePtr;
@@ -15,18 +16,33 @@
 
 void simRun(  ConfigDataType *configPtr, OpCodeType *currentPtr )
 {
+
+	pthread_t thread_id; //thread identifier
+	pthread_attr_t thread_attr; //set of thread attributes
+
+	pthread_attr_init( &thread_attr ); //sets the default attribute of thread
+
+//arg 1: pointer to thread_id
+//arg 2: specifies attributes
+//arg 3: name of funtion to be executed for the thread to be created
+//arg 4: passes arguements to the function "runner"
+	pthread_create( &thread_id, &thread_attr, runner, currentPtr)
+
+	pthread_join( thread_id, currentPtr ); //equivalent of wait() for processes
+
+
 	char timeString[ MAX_STR_LEN ];
 
-	printf( "\nSystem Start")
+	printf( "\nSystem Start");
 	//access at 0 timer
 	accessTimer( ZERO_TIMER, timeString );
 	//possibly a timeToString call
 	//void timeToString( int secTime, int uSecTime, char *timeStr )
 	//timeToString( , , timeString );
 
-	printf( "\nCreating Process Control Blocks")
+	printf( "\nCreating Process Control Blocks");
 	//call function to create PCB
-	PCB_LL *LinkedList = createPCB( configPtr, currentPtr ); //function needs to create PCBS
+	//PCB_LL *LinkedList = createPCB( configPtr, currentPtr ); //function needs to create PCBS
 
 	//access timer LAP
 	accessTimer( LAP_TIMER, timeString );
@@ -37,12 +53,12 @@ void simRun(  ConfigDataType *configPtr, OpCodeType *currentPtr )
 	//for loop setting new process states to NEW
 	while( currentPtr != NULL )
 		{
-			LinkedList->stateOfProcess = NEW;
+		//	LinkedList->stateOfProcess = NEW;
 			currentPtr = currentPtr->next;
 		}
 
 	printf( "\nAll processes initilized in " );
-	printf( "%s", LinkedList->stateOfProcess );
+	//printf( "%s", LinkedList->stateOfProcess );
 	printf( " state");
 
 
@@ -54,12 +70,12 @@ void simRun(  ConfigDataType *configPtr, OpCodeType *currentPtr )
 	//run loop to set in READY state
 	while( currentPtr != NULL )
 		{
-			LinkedList->stateOfProcess = READY;
+		//	LinkedList->stateOfProcess = READY;
 			currentPtr = currentPtr->next;
 		}
 
 	printf( "\nAll processes now set in " );
-	printf( "%s", LinkedList->stateOfProcess );
+	//printf( "%s", LinkedList->stateOfProcess );
 	printf( " state");
 
 	//ACCESS LAP TIMER
@@ -67,9 +83,9 @@ void simRun(  ConfigDataType *configPtr, OpCodeType *currentPtr )
 
 	//"Process" + PID + "se;ected with" + RemainingTime + "ms remaining"
 	printf( "\n Process " );
-	printf( "%s", LinkedList->PID );
+//	printf( "%s", LinkedList->PID );
 	printf( " selected with ");
-	printf( "%d" , LinkedList->timeRemaining );
+//	printf( "%d" , LinkedList->timeRemaining );
 	printf( " ms remaining\n" );
 
 	//ACCESS LAP TIMER
@@ -77,13 +93,13 @@ void simRun(  ConfigDataType *configPtr, OpCodeType *currentPtr )
 
 
 	//set Process 0 to running state
-	LinkedList->stateOfProcess = RUNNING;
+	//LinkedList->stateOfProcess = RUNNING;
 
 	//"Process" + PID + "set in " + stateOfOperation + "state"
 	printf( "\n Process " );
-	printf( "%s", LinkedList->PID );
+//	printf( "%s", LinkedList->PID );
 	printf( " set in ");
-	printf( "%d" , LinkedList->stateOfProcess );
+//	printf( "%d" , LinkedList->stateOfProcess );
 	printf( " state" );
 
 	//ACCESS LAP TIMER
@@ -94,6 +110,11 @@ void simRun(  ConfigDataType *configPtr, OpCodeType *currentPtr )
 	//loop
 
 }
+
+void *runner( void *param )
+	{
+
+	}
 
 
 
@@ -110,19 +131,34 @@ void simRun(  ConfigDataType *configPtr, OpCodeType *currentPtr )
 
 void createPCB( ConfigDataType *configPtr, OpCodeType *currentPtr )
 	{
-		PCB_LL *localRef =  malloc ( sizeof ( PCB_LL ) ); //neeed to point to opCodeType
-		PCB_LL *headRef = localRef;
 
-		localRef->currentPtr;
+		PCB_LL *localPtr =  malloc ( sizeof ( PCB_LL ) ); //neeed to point to opCodeType
+		localPtr->next = NULL;
+		//PCB_LL *headPtr = localPtr;
+		//PCB_LL *tailPtr = headPtr;
+
+		if( localPtr->next == NULL )
+			{
+				localPtr->next = malloc ( sizeof ( PCB_LL ) );
+
+
+
+			}
+		while( localPtr->next != NULL )
+			{
+
+			}
+
+
+/*int PID;
+		double timeRemaining;
+		States stateOfProcess;
+	
 
 		
-
-
-
-
-
-
-
+		struct PCB_LL * next;
+*/
+		
 	}
 
 void ProcessType ( ConfigDataType *configPtr, OpCodeType *currentPtr )

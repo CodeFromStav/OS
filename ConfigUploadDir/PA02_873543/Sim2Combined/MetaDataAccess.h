@@ -21,7 +21,7 @@ typedef enum {MD_FILE_ACCESS_ERR = 3,
 typedef struct OpCodeType
    {
       char opLtr;
-      char *opName[ 100 ];
+      char opName[ 100 ];
       int opValue;
 
       struct OpCodeType *next;

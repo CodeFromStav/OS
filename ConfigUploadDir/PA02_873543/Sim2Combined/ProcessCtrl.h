@@ -6,7 +6,7 @@
 #include "ConfigAccess.h"
 
 
-struct PCB_LL *LL_headNodePtr = NULL;
+// struct PCB_LL *LL_headNodePtr = NULL;
 
 //create enum with 5 states
  typedef enum 
@@ -19,11 +19,13 @@ struct PCB_LL *LL_headNodePtr = NULL;
 //typedef linkedlist
 typedef struct PCB_LL
 	{
-		//PID
 		int PID;
-		double timeRemaining;
+		//processName
+		//counter for next process
+		
 		States stateOfProcess;
 	
+		double timeRemaining;
 
 		
 		struct PCB_LL * next;
