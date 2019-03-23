@@ -14,6 +14,16 @@
 
 //runs the whole simulator
 
+
+
+/*THREADS:
+-the simulator does not support a multi-tasking
+-POSIX thread to manage the cycle time for all I/O operations
+-not required for run operations
+
+
+*/
+
 void simRun(  ConfigDataType *configPtr, OpCodeType *currentPtr )
 {
 
