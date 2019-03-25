@@ -19,11 +19,11 @@ void *threadEntry( void *param )
    case 'A':
    // Program application used with Start and End
    // this is the only case where I check for start and end
-      if( tempPtr->opName == "start" )
+      if( compareString( tempPtr->opName, "start") == 0 )
         {
            messageStr = "run operation start\n";
         }
-      else if( tempPtr->opName == "end" )
+      else if( compareString( tempPtr->opName, "end" ) == 0 )
         {
            messageStr = "run operation end\n";
         }
@@ -127,6 +127,7 @@ void *threadEntry( void *param )
    // free memory
    free ( timeStr );
    free ( messageStr );
+
 }
 
 //Thread wait function ( for I/O )

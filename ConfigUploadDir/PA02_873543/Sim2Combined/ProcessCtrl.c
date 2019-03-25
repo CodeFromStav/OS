@@ -7,7 +7,6 @@
 
 
 
-
 //function to create the string output to either the file or the user
 void createDisplayString( char *displayString, char *timeString, char *messageStr )
 {
@@ -123,7 +122,7 @@ void simRun(  ConfigDataType *configPtr, OpCodeType *currentPtr )
    while( endOfProgram != True )
    {
      // create thread
-     pthread_create( &thread0, NULL, threadEntry, &pcb);
+     pthread_create( &thread0, NULL, threadEntry, &pcb );
      // wait for thread to complete
      pthread_join( thread0, NULL );
      // move pointer to next program
