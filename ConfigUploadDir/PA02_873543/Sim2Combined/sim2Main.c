@@ -14,6 +14,8 @@ int main( int argc, char ** argv )
 		ConfigDataType *configDataPtr;
 		OpCodeType *mdData;
 
+
+
 		// logSettings output;
 
 		// output.printToMonitor == True;
@@ -23,7 +25,6 @@ int main( int argc, char ** argv )
 		// startLogging( &output );
 
 
-            
          
         printf( "\nSimulator Program" );
         printf( "\n=================\n" );		  
@@ -31,6 +32,8 @@ int main( int argc, char ** argv )
         printf( "\nUploading Meta Data Files" );
         printf( "\n==================" );
         printf( "\nBegin Simulation\n" );
+
+        runTimer( 0 ); //start timer
 
 
         if( argc < 2 )
@@ -47,7 +50,7 @@ int main( int argc, char ** argv )
 
         if( configAccessResult == NO_ERR )
             {
-                displayConfigData( configDataPtr );                  
+                //simRun( configDataPtr, mdData );          
             }
 
         else

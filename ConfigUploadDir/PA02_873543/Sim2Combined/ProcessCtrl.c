@@ -5,43 +5,86 @@
 #include <pthread.h>
 
 
-//OpCodeType *LL_headNodePtr;
-
-//my PCB Linked List does not do anything, restructure it.
-//Do not need to allocate memory for each next node because the OpCodes are already there!
-//Process Type on the right track but does not do what it needs
 
 
-//runs the whole simulator
+//function to create the string output to either the file or the user
+void createDisplayStr ( char *displayStr, char *timeStr, char *messageStr )
+{
+   concatenateString( displayString, timeString );
+   concatenateString( displayString, tempStr );
+}
 
-
-
-/*THREADS:
--the simulator does not support a multi-tasking
--POSIX thread to manage the cycle time for all I/O operations
--not required for run operations
-
-
-*/
+//function to display based on flags passed in
+void display( Boolean monitorFlag, Boolean fileFlag, char *str ,
+              char **fileBuffer, int currentIndex)
+{
+    if( monitorFlag == True )
+    {
+       printf( "%s", str );
+    }
+    if( fileFlag == True )
+    {
+      fileBuffer[ currentIndex ] = str;
+    }
+}
 
 void simRun(  ConfigDataType *configPtr, OpCodeType *currentPtr )
 {
+	char *displayString = (char *) malloc(MAX_STR_LENGTH);
+	char *timeStr = (char *) malloc(MAX_STR_LENGTH);
+	char *messageStr = (char *) malloc(MAX_STR_LENGTH);
 
-	pthread_t thread_id; //thread identifier
-	pthread_attr_t thread_attr; //set of thread attributes
-
-	pthread_attr_init( &thread_attr ); //sets the default attribute of thread
-
-//arg 1: pointer to thread_id
-//arg 2: specifies attributes
-//arg 3: name of funtion to be executed for the thread to be created
-//arg 4: passes arguements to the function "runner"
-	pthread_create( &thread_id, &thread_attr, runner, currentPtr)
-
-	pthread_join( thread_id, currentPtr ); //equivalent of wait() for processes
+	ProgRun *pcb;
 
 
-	char timeString[ MAX_STR_LEN ];
+
+	//PCB_LL ProcessControl;
+
+
+ 	displayStr = "   ";
+   accessTimer( ZERO_TIMER, &timeStr ); 
+   messageStr = ", OS: System Start\n";
+   createDisplayStr ( &displayString, timeStr, messageStr );
+   display( pcb->monitorFlag, pcb->fileFlag, &displayString ,
+				 pcb->fileBuffer, pcb->currentIndex );
+   pcb->currentIndex++;
+
+
+
+ 	displayStr = "   ";
+   accessTimer( LAP_TIMER, &timeStr ); 
+   messageStr = ", OS: Create Process Control Blocks\n";
+   createDisplayStr ( &displayString, timeStr, messageStr );
+   display( pcb->monitorFlag, pcb->fileFlag, &displayString ,
+				 pcb->fileBuffer, pcb->currentIndex );
+   pcb->currentIndex++;
+
+
+
+ 	displayStr = "   ";
+   accessTimer( LAP_TIMER, &timeStr ); 
+   messageStr = ", OS: All processes initialized in New state\n";
+   createDisplayStr ( &displayString, timeStr, messageStr );
+   display( pcb->monitorFlag, pcb->fileFlag, &displayString ,
+				 pcb->fileBuffer, pcb->currentIndex );
+   pcb->currentIndex++;
+
+
+
+ 	displayStr = "   ";
+   accessTimer( LAP_TIMER, &timeStr ); 
+   messageStr = ", OS: All processes now set in Ready state\n";
+   createDisplayStr ( &displayString, timeStr, messageStr );
+   display( pcb->monitorFlag, pcb->fileFlag, &displayString ,
+				 pcb->fileBuffer, pcb->currentIndex );
+   pcb->currentIndex++;
+
+
+
+
+
+
+
 
 	printf( "\nSystem Start");
 	//access at 0 timer
@@ -53,17 +96,18 @@ void simRun(  ConfigDataType *configPtr, OpCodeType *currentPtr )
 	printf( "\nCreating Process Control Blocks");
 	//call function to create PCB
 	//PCB_LL *LinkedList = createPCB( configPtr, currentPtr ); //function needs to create PCBS
-
+	createPCB( configPtr, currentPtr );
 	//access timer LAP
 	accessTimer( LAP_TIMER, timeString );
 
+	
 
 //all processes initialized in new state
 
 	//for loop setting new process states to NEW
 	while( currentPtr != NULL )
 		{
-		//	LinkedList->stateOfProcess = NEW;
+			//ProcessControl->
 			currentPtr = currentPtr->next;
 		}
 
@@ -123,6 +167,7 @@ void simRun(  ConfigDataType *configPtr, OpCodeType *currentPtr )
 
 void *runner( void *param )
 	{
+		//calcRemainingTime( )
 
 	}
 
@@ -139,25 +184,34 @@ void *runner( void *param )
 	
 // 	}
 
-void createPCB( ConfigDataType *configPtr, OpCodeType *currentPtr )
-	{
+// PCB_LL createPCB( ConfigDataType *configPtr, OpCodeType *currentPtr )
+// 	{
+// 		if( currentPtr == NULL )
+// 			{
+// 				PCB_LL *localPtr =  malloc ( sizeof ( PCB_LL ) ); //neeed to point to opCodeType
+// 				localPtr->next = NULL;
+// 				PCB_LL *headPtr = localPtr;
+// 				PCB_LL *tailPtr = headPtr;
 
-		PCB_LL *localPtr =  malloc ( sizeof ( PCB_LL ) ); //neeed to point to opCodeType
-		localPtr->next = NULL;
-		//PCB_LL *headPtr = localPtr;
-		//PCB_LL *tailPtr = headPtr;
-
-		if( localPtr->next == NULL )
-			{
-				localPtr->next = malloc ( sizeof ( PCB_LL ) );
+// 				localPtr->PID = 0;
+// 				localPtr->stateOfProcess = NEW;
+// 				localPtr->timeRemaining = calcRemainingTime( currentPtr, configPtr );
+// 				localPtr->next = malloc( sizeof( PCB_LL ) );
+// 			}
+		
 
 
+		// if( localPtr->next == NULL )
+		// 	{
+		// 		localPtr->next = malloc ( sizeof ( PCB_LL ) );
 
-			}
-		while( localPtr->next != NULL )
-			{
 
-			}
+
+		// 	}
+		// while( localPtr->next != NULL )
+		// 	{
+
+		// 	}
 
 
 /*int PID;
@@ -169,7 +223,7 @@ void createPCB( ConfigDataType *configPtr, OpCodeType *currentPtr )
 		struct PCB_LL * next;
 */
 		
-	}
+	//}
 
 void ProcessType ( ConfigDataType *configPtr, OpCodeType *currentPtr )
 	{

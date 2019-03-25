@@ -32,6 +32,17 @@ typedef struct PCB_LL
 
 	} PCB_LL;
 
+//config data structure
+typedef struct
+   {
+      OpCode *currentPtr;
+      ConfigDataType *accessPtr;
+      int currentIndex;
+      Boolean monitorFlag;
+      Boolean fileFlag;
+      char *fileBuffer[];
+
+   } ProgRun;
 //iterate through and initialize these based on the Prefix
 
 
