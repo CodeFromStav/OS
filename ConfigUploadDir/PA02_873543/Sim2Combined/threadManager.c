@@ -1,16 +1,17 @@
 #include "threadManager.h"
+#include "ProcessCtrl.h"
 
 //Thread Entry Function
 void *threadEntry( void *param )
 {
    // variables
    char* displayStr = ", Process: 0, ";
-   char *timeStr = (char *) malloc(MAX_STR_LENGTH);
-   char *messageStr = (char *) malloc(MAX_STR_LENGTH);
-   //cast to ProcessControlBlock
-   ProcessControlBlock *pcb = (ProcessControlBlock *)param;
+   char *timeStr = (char *) malloc(MAX_STR_LEN );
+   char *messageStr = (char *) malloc(MAX_STR_LEN );
+   //cast to ProgRun
+   ProgRun *pcb = (ProgRun *)param;
    // I have access to the OpCode linked list and Config data
-   OpCode *tempPtr = pcb->currentPtr;
+   OpCodeType *tempPtr = pcb->currentPtr;
    char operatingChar = tempPtr->opLtr;
 
    switch( operatingChar )
@@ -18,17 +19,17 @@ void *threadEntry( void *param )
    case 'A':
    // Program application used with Start and End
    // this is the only case where I check for start and end
-      if( opName == "start" )
+      if( tempPtr->opName == "start" )
         {
            messageStr = "run operation start\n";
         }
-      else if( opName == "end" )
+      else if( tempPtr->opName == "end" )
         {
            messageStr = "run operation end\n";
         }
-      accessTimer( LAP_TIMER, &timeStr ); 
-      createDisplayStr ( &displayStr, timeStr, messageStr );
-      display( pcb->monitorFlag, pcb->fileFlag, &displayString ,pcb->fileBuffer, 
+      accessTimer( LAP_TIMER, timeStr ); 
+      createDisplayString( displayStr, timeStr, messageStr );
+      display( pcb->monitorFlag, pcb->fileFlag, displayStr, pcb->fileBuffer, 
             pcb->currentIndex );
       pcb->currentIndex++;
       // no logic for waiting because each A(operation) always has 0ms as 
@@ -47,7 +48,7 @@ void *threadEntry( void *param )
         }
       accessTimer( LAP_TIMER, &timeStr ); 
       createDisplayStr ( &displayStr, timeStr, messageStr );
-      display( pcb->monitorFlag, pcb->fileFlag, &displayString ,pcb->fileBuffer, 
+      display( pcb->monitorFlag, pcb->fileFlag, &displayStr ,pcb->fileBuffer, 
             pcb->currentIndex );
       pcb->currentIndex++;
       
@@ -57,7 +58,7 @@ void *threadEntry( void *param )
       messageStr = "finished memory operation\n"
       accessTimer( LAP_TIMER, &timeStr ); 
       createDisplayStr ( &displayStr, timeStr, messageStr );
-      display( pcb->monitorFlag, pcb->fileFlag, &displayString ,pcb->fileBuffer, 
+      display( pcb->monitorFlag, pcb->fileFlag, &displayStr ,pcb->fileBuffer, 
             pcb->currentIndex );
       pcb->currentIndex++;
       //end of memory operation
@@ -67,9 +68,9 @@ void *threadEntry( void *param )
    case 'P':
    // Process used with run
    messageStr = "Program run\n";
-   accessTimer( LAP_TIMER, &timeStr ); 
-   createDisplayStr ( &displayStr, timeStr, messageStr );
-   display( pcb->monitorFlag, pcb->fileFlag, &displayString , pcb->fileBuffer, 
+   accessTimer( LAP_TIMER, timeStr ); 
+   createDisplayString( displayStr, timeStr, messageStr );
+   display( pcb->monitorFlag, pcb->fileFlag, displayStr , pcb->fileBuffer, 
             pcb->currentIndex );
    pcb->currentIndex++;
 
@@ -81,44 +82,44 @@ void *threadEntry( void *param )
    
    case 'I':
    // Input used with descriptors such as harddrive and keyboard
-   messageString = tempPtr->opName;
-   concatenateString( messageString, " input start\n" );
-   accessTimer( LAP_TIMER, &timeStr ); 
-   createDisplayStr ( &displayStr, timeStr, messageStr );
-   display( pcb->monitorFlag, pcb->fileFlag, &displayString , pcb->fileBuffer, 
+   messageStr = tempPtr->opName;
+   concatenateString( messageStr, " input start\n" );
+   accessTimer( LAP_TIMER, timeStr ); 
+   createDisplayString( displayStr, timeStr, messageStr );
+   display( pcb->monitorFlag, pcb->fileFlag, displayStr , pcb->fileBuffer, 
             pcb->currentIndex );
    pcb->currentIndex++;
 
    //sleep for amount of time specified
    threadSleeper( tempPtr->opValue, timeStr );
    
-   messageString = tempPtr->opName;
-   concatenateString( messageString, " input end\n" );
-   accessTimer( LAP_TIMER, &timeStr ); 
-   createDisplayStr ( &displayStr, timeStr, messageStr );
-   display( pcb->monitorFlag, pcb->fileFlag, &displayString , pcb->fileBuffer, 
+   messageStr = tempPtr->opName;
+   concatenateString( messageStr, " input end\n" );
+   accessTimer( LAP_TIMER, timeStr ); 
+   createDisplayString( displayStr, timeStr, messageStr );
+   display( pcb->monitorFlag, pcb->fileFlag, displayStr , pcb->fileBuffer, 
             pcb->currentIndex );
    pcb->currentIndex++;
    break;
 
    case 'O':
    // Output used with descriptors
-   messageString = tempPtr->opName;
-   concatenateString( messageString, " output start\n" );
-   accessTimer( LAP_TIMER, &timeStr ); 
-   createDisplayStr ( &displayStr, timeStr, messageStr );
-   display( pcb->monitorFlag, pcb->fileFlag, &displayString , pcb->fileBuffer, 
+   messageStr = tempPtr->opName;
+   concatenateString( messageStr, " output start\n" );
+   accessTimer( LAP_TIMER, timeStr ); 
+   createDisplayString( displayStr, timeStr, messageStr );
+   display( pcb->monitorFlag, pcb->fileFlag, displayStr , pcb->fileBuffer, 
             pcb->currentIndex );
    pcb->currentIndex++;
 
    //sleep for amount of time specified
    threadSleeper( tempPtr->opValue, timeStr );
    
-   messageString = tempPtr->opName;
-   concatenateString( messageString, " output end\n" );
-   accessTimer( LAP_TIMER, &timeStr ); 
-   createDisplayStr ( &displayStr, timeStr, messageStr );
-   display( pcb->monitorFlag, pcb->fileFlag, &displayString , pcb->fileBuffer, 
+   messageStr = tempPtr->opName;
+   concatenateString( messageStr, " output end\n" );
+   accessTimer( LAP_TIMER, timeStr ); 
+   createDisplayString( displayStr, timeStr, messageStr );
+   display( pcb->monitorFlag, pcb->fileFlag, displayStr , pcb->fileBuffer, 
             pcb->currentIndex );
    pcb->currentIndex++;
    break;
@@ -131,8 +132,8 @@ void *threadEntry( void *param )
 //Thread wait function ( for I/O )
 void threadSleeper ( int timeToWait, char *timeStr )
 {
-   double toTime, tempDoub;
-   char *tempStr  = (char *) malloc(MAX_STR_LENGTH);
+   double toTime, tempDouble;
+   char *tempStr  = (char *) malloc(MAX_STR_LEN );
 
    //get miliseconds in proper format (i.e. 
    double waitTime = timeToWait / 100;
@@ -145,7 +146,7 @@ void threadSleeper ( int timeToWait, char *timeStr )
    while (tempDouble < toTime )
    {
       // keeps going until timer is equal to or greater than timer
-      accessTimer( LAP_TIMER, &tempStr ); 
+      accessTimer( LAP_TIMER, tempStr ); 
       sscanf(timeStr, "%lf", &tempDouble);
    }
    // free memory

@@ -1,3 +1,5 @@
+#ifndef THREADMANAGER_H
+#define THREADMANAGER_H
 //Header for threadManager
 #include <stdio.h>
 #include "simtimer.h"
@@ -8,3 +10,5 @@
 // function headers
 void *threadEntry( void *param );
 void threadSleeper ( int timeToWait, char *timeStr );
+
+#endif

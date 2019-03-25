@@ -50,7 +50,7 @@ int main( int argc, char ** argv )
 
         if( configAccessResult == NO_ERR )
             {
-                //simRun( configDataPtr, mdData );          
+                simRun( configDataPtr, mdData );          
             }
 
         else
@@ -58,8 +58,6 @@ int main( int argc, char ** argv )
                 displayConfigError( configAccessResult );
             }
 
- 		printf( "\nMeta Data File Upload Program\n" );
-        printf( "=============================\n" );
 
       if( argc < 2 )
          {

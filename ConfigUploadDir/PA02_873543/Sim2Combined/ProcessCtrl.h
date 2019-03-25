@@ -35,7 +35,7 @@ typedef struct PCB_LL
 //config data structure
 typedef struct
    {
-      OpCode *currentPtr;
+      OpCodeType *currentPtr;
       ConfigDataType *accessPtr;
       int currentIndex;
       Boolean monitorFlag;
@@ -49,10 +49,16 @@ typedef struct
 
 
 void simRun(  ConfigDataType *configPtr, OpCodeType *currentPtr );
+void createDisplayString ( char *displayStr, char *timeStr, char *messageStr );
+void display( Boolean monitorFlag, Boolean fileFlag, char *str ,
+              char **fileBuffer, int currentIndex);
 
-void createPCB( ConfigDataType *configPtr, OpCodeType *currentPtr );
-void ProcessType ( ConfigDataType *configPtr, OpCodeType *currentPtr );
 int calcRemainingTime( OpCodeType *currentPtr , ConfigDataType *configPtr );
+void logDump( ProgRun *pcb);
+
+
+
+//void ProcessType ( ConfigDataType *configPtr, OpCodeType *currentPtr );
 
 
 #endif
