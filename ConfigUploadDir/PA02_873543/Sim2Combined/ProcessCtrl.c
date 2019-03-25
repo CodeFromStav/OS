@@ -35,6 +35,7 @@ void simRun(  ConfigDataType *configPtr, OpCodeType *currentPtr )
 	char *messageStr = (char *) malloc(MAX_STR_LENGTH);
 
 	ProgRun *pcb;
+	int timeRemaining;
 
 
 
@@ -80,6 +81,26 @@ void simRun(  ConfigDataType *configPtr, OpCodeType *currentPtr )
    pcb->currentIndex++;
 
 
+	displayStr = "   ";
+   accessTimer( LAP_TIMER, &timeStr );
+
+	timeRemaining = calcRemainingTime( currentPtr, configPtr );
+
+	// sprintf converts a int into string which is placed in tempStr 
+   // (this is part of <stdio.h>)
+   messageStr = ", OS: Process 0 selected with ";
+
+   sprintf( tempStr, "%d", timeRemaining);
+   concatenateString(messageStr , tempStr);
+
+   tempStr = " ms remaining\n";
+   concatenateString(messageString, tempStr);
+
+   // merge strings and print
+   createDisplayStr ( &displayString, timeStr, messageStr );
+   display( pcb->monitorFlag, pcb->fileFlag, &displayString , pcb->fileBuffer, 
+            pcb->currentIndex );
+   pcb->currentIndex++;
 
 
 
