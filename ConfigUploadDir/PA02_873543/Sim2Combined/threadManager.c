@@ -128,6 +128,7 @@ void *threadEntry( void *param )
    free ( timeStr );
    free ( messageStr );
 
+   return NULL;
 }
 
 //Thread wait function ( for I/O )
