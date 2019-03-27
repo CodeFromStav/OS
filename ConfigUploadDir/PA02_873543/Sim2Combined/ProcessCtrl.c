@@ -40,37 +40,182 @@ void display( Boolean monitorFlag, Boolean fileFlag, char *str ,
             //pthrea_create( &pid, NULL, runIOTimer, &runFor)
             //pthread_join(pid NULL)
 
-//void *name( void *param)
-//{
+void *name( void *param)
+{
    runTimer( &param )
-//}
+}
 
 //sleeper
+void threadSleeper ( int timeToWait, char *timeStr )
+{
+   double toTime, tempDouble;
+   char *tempStr  = (char *) malloc(MAX_STR_LEN );
+
+   //get miliseconds in proper format (i.e. 
+   double waitTime = timeToWait / 100;
+   // this is to make sure the math is correct (both numbers will be the same 
+   // length
+   waitTime += 0.000000;
+   sscanf(timeStr, "%lf", &toTime);
+   toTime += waitTime;
+
+   while (tempDouble < toTime )
+   {
+      // keeps going until timer is equal to or greater than timer
+      accessTimer( LAP_TIMER, tempStr ); 
+      sscanf(timeStr, "%lf", &tempDouble);
+   }
+
+/*
+if( pcb->monitorFlag == True )
+     {
+        printf( "\nSimulator Program\n"  );
+        printf( "==================\n\n" );
+        printf( "Uploading Configuration Files\n\n" );
+        printf( "Uploading Meta Data Files\n\n" );
+        printf( "=================\n" );
+        printf( "Begin Simulation\n\n" );
+     }
 
 
+ 	displayString = "   ";
+   accessTimer( ZERO_TIMER, timeStr ); 
+   messageStr = ", OS: System Start\n";
+   createDisplayString( displayString, timeStr, messageStr );
+   display( pcb->monitorFlag, pcb->fileFlag, displayString ,
+				 pcb->fileBuffer, pcb->currentIndex );
+   pcb->currentIndex++;
+
+
+
+ 	displayString = "   ";
+   accessTimer( LAP_TIMER, timeStr ); 
+   messageStr = ", OS: Create Process Control Blocks\n";
+   createDisplayString( displayString, timeStr, messageStr );
+   display( pcb->monitorFlag, pcb->fileFlag, displayString ,
+				 pcb->fileBuffer, pcb->currentIndex );
+   pcb->currentIndex++;
+
+
+
+ 	displayString = "   ";
+   accessTimer( LAP_TIMER, timeStr ); 
+   messageStr = ", OS: All processes initialized in New state\n";
+   createDisplayString( displayString, timeStr, messageStr );
+   display( pcb->monitorFlag, pcb->fileFlag, displayString ,
+				 pcb->fileBuffer, pcb->currentIndex );
+   pcb->currentIndex++;
+
+
+
+ 	displayString = "   ";
+   accessTimer( LAP_TIMER, timeStr ); 
+   messageStr = ", OS: All processes now set in Ready state\n";
+   createDisplayString( displayString, timeStr, messageStr );
+   display( pcb->monitorFlag, pcb->fileFlag, displayString ,
+				 pcb->fileBuffer, pcb->currentIndex );
+   pcb->currentIndex++;
+
+*/
 
 void simRun( ConfigDataType *configPtr, OpCodeType *currentPtr )
 {
-   PCB_LL *localPtr;
+   
+
+   //PCB_LL *localPtr;
    PCB_LL *headNodePtr;
    OpCodeType CycleRate = configPtr->ioCycleRate;
    OpCodeType CurrentVal = headNodePtr->progCounter->opValue;
 
-   
+   char *timeStr = (char *) malloc(MAX_STR_LEN );
+   char *displayString = (char *) malloc(MAX_STR_LEN );
+   char *messageStr = (char *) malloc(MAX_STR_LEN );
 
-   localPtr = malloc( sizeof( PCB_LL ) );
    
-   headNodePtr = localPtr;
+   if( headNodePtr->MonitorFlag == True )
+     {
+        printf( "\nSimulator Program\n"  );
+        printf( "==================\n\n" );
+        printf( "Uploading Configuration Files\n\n" );
+        printf( "Uploading Meta Data Files\n\n" );
+        printf( "=================\n" );
+        printf( "Begin Simulation\n\n" );
+     }
+
+   displayString = "   ";
+   accessTimer( ZERO_TIMER, timeStr ); 
+   messageStr = ", OS: System Start\n";
+   createDisplayString( displayString, timeStr, messageStr );
+   display( pcb->monitorFlag, pcb->fileFlag, displayString ,
+				 pcb->fileBuffer, pcb->currentIndex );
+   pcb->currentIndex++;
+
+
+
+ 	displayString = "   ";
+   accessTimer( LAP_TIMER, timeStr ); 
+   messageStr = ", OS: Create Process Control Blocks\n";
+   createDisplayString( displayString, timeStr, messageStr );
+   display( pcb->monitorFlag, pcb->fileFlag, displayString ,
+				 pcb->fileBuffer, pcb->currentIndex );
+   pcb->currentIndex++;
+
+
+
+ 	displayString = "   ";
+   accessTimer( LAP_TIMER, timeStr ); 
+   messageStr = ", OS: All processes initialized in New state\n";
+   createDisplayString( displayString, timeStr, messageStr );
+   display( pcb->monitorFlag, pcb->fileFlag, displayString ,
+				 pcb->fileBuffer, pcb->currentIndex );
+   pcb->currentIndex++;
+
+
+
+ 	displayString = "   ";
+   accessTimer( LAP_TIMER, timeStr ); 
+   messageStr = ", OS: All processes now set in Ready state\n";
+   createDisplayString( displayString, timeStr, messageStr );
+   display( pcb->monitorFlag, pcb->fileFlag, displayString ,
+				 pcb->fileBuffer, pcb->currentIndex );
+   pcb->currentIndex++;
+
+
+	displayString = "   ";
+   accessTimer( LAP_TIMER, timeStr );
+
+	timeRemaining = calcRemainingTime( currentPtr, configPtr );
+
+	// sprintf converts a int into string which is placed in tempStr 
+   // (this is part of <stdio.h>)
+   messageStr = ", OS: Process 0 selected with ";
+
+   sprintf( tempStr, "%d", timeRemaining);
+   concatenateString(messageStr , tempStr);
+
+   tempStr = " ms remaining\n";
+   concatenateString(messageStr, tempStr);
+
+   // merge strings and print
+   createDisplayString( displayString, timeStr, messageStr );
+   display( pcb->monitorFlag, pcb->fileFlag, displayString , pcb->fileBuffer, 
+            pcb->currentIndex );
+   pcb->currentIndex++;
+
+
+
+
+   // localPtr = malloc( sizeof( PCB_LL ) );
+   
+  // headNodePtr = localPtr;
 
    while( headNodePtr != NULL ) //OUTER PCB LOOP
       {
-         while( compareString( localPtr->progCounter->opName, "End" ) != 0)  //INNER PROG COUNTER
+         while( ( compareString( headNodePtr->progCounter->opLtr, "A") != 0 ) && (compareString( headNodePtr->progCounter->opName, "End" ) != 0 ) ) //INNER PROG COUNTER
          {
             if ( headNodePtr->progCounter->opLtr == "P" )//P
             {
                runTimer( headNodePtr->progCounter->opValue * configPtr->procCycleRate );
-
-
             }
 
             else if( headNodePtr->progCounter->opLtr == "I" || headNodePtr->progCounter->opLtr == "O" ) //I/O
@@ -79,7 +224,6 @@ void simRun( ConfigDataType *configPtr, OpCodeType *currentPtr )
                int runTime = CycleRate * CurrentVal;
                pthread_create( &thread0, NULL, runTimer, &runTime);
                pthread_join( thread0, NULL );
-               
             }
             else //M
             {
@@ -94,6 +238,12 @@ void simRun( ConfigDataType *configPtr, OpCodeType *currentPtr )
          headNodePtr = headNodePtr->next;
         
       }
+
+
+
+
+
+
    
 }
 /*

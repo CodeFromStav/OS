@@ -25,22 +25,25 @@ typedef struct PCB_LL
 	
 		double timeRemaining;
 
+      Boolean MonitorFlag;
+      Boolean LogFlag;
+
 		
 		struct PCB_LL * next;
 
 	} PCB_LL;
 
 //config data structure
-typedef struct
-   {
-      OpCodeType *currentPtr;
-      ConfigDataType *accessPtr;
-      int currentIndex;
-      Boolean monitorFlag;
-      Boolean fileFlag;
-      char *fileBuffer[];
+// typedef struct
+//    {
+//       OpCodeType *currentPtr;
+//       ConfigDataType *accessPtr;
+//       int currentIndex;
+//       Boolean monitorFlag;
+//       Boolean fileFlag;
+//       char *fileBuffer[];
 
-   } ProgRun;
+//    } ProgRun;
 //iterate through and initialize these based on the Prefix
 
 
