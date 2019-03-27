@@ -33,16 +33,68 @@ void simRun(  ConfigDataType *configPtr, OpCodeType *currentPtr )
 	Boolean endOfProgram = False;
    int timeRemaining;
 	//int size;
-	//int tempInt;
+	int tempInt;
    ProgRun *pcb;
-   //char *fileName = (char *) malloc(MAX_STR_LEN );
+   OpCodeType *linkedHeadNode = NULL;
+
+  // char *fileName = (char *) malloc(MAX_STR_LEN );
    char *timeStr = (char *) malloc(MAX_STR_LEN );
    char *displayString = (char *) malloc(MAX_STR_LEN );
    char *messageStr = (char *) malloc(MAX_STR_LEN );
    char *tempStr = (char *) malloc(MAX_STR_LEN );
+   linkedHeadNode = malloc( sizeof( OpCodeType ) );
    pthread_t thread0;
 
 	//PCB_LL ProcessControl;
+
+
+   // currentPtr = linkedHeadNode;
+   // while( currentPtr != NULL )
+   // {
+   //    size++;
+   //    currentPtr = currentPtr->next;
+   // }
+   //reset currentPtr for later use
+   currentPtr = linkedHeadNode;
+   // Initialize PCB
+   pcb->currentPtr = linkedHeadNode;
+   pcb->accessPtr  = configPtr;
+   pcb->currentIndex = 0; 
+   // logic to determine flags
+   tempInt = configPtr->logToCode;
+   if( tempInt == LOGTO_MONITOR_CODE )
+     {
+        pcb->monitorFlag = True;
+        pcb->fileFlag = False;
+     }
+   else if( tempInt == LOGTO_FILE_CODE )
+     {
+        pcb->monitorFlag = False;
+        pcb->fileFlag = True;
+     }
+   else if( tempInt == LOGTO_BOTH_CODE )
+     {
+        pcb->monitorFlag = True;
+        pcb->fileFlag = True;
+     }
+
+   // create fileBuffer a spart of PCB so threads has access
+   // Printing both star and end commands = size * 2
+   // seven lines remain unaccounted for hence + 7
+   // the rest will be handled when everything is output to file
+
+  // pcb->fileBuffer[ ( size * 2 ) + 7];
+
+   //display title
+   if( pcb->monitorFlag == True )
+     {
+        printf( "\nSimulator Program\n"  );
+        printf( "==================\n\n" );
+        printf( "Uploading Configuration Files\n\n" );
+        printf( "Uploading Meta Data Files\n\n" );
+        printf( "=================\n" );
+        printf( "Begin Simulation\n\n" );
+     }
 
 
  	displayString = "   ";
