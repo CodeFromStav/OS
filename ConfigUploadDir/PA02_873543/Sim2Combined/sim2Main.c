@@ -12,7 +12,12 @@ int main( int argc, char ** argv )
 		char configFileName[ MAX_STR_LEN ];
 		char mdFileName[ MAX_STR_LEN ];
 		ConfigDataType *configDataPtr;
-		OpCodeType *mdData;
+		OpCodeType *metaDataPtr;
+
+    //build linked list of PCB pointing to metaData
+
+
+    
 
 
 
@@ -50,7 +55,7 @@ int main( int argc, char ** argv )
 
         if( configAccessResult == NO_ERR )
             {
-                simRun( configDataPtr, mdData );          
+                simRun( configDataPtr, metaDataPtr );          
             }
 
         else
@@ -69,19 +74,19 @@ int main( int argc, char ** argv )
 			}
 
       copyString( mdFileName, configDataPtr->metaDataFileName );
-      mdAccessResult = getOpCodes( mdFileName, &mdData ); //accesses the opCodes
+      mdAccessResult = getOpCodes( mdFileName, &metaDataPtr ); //accesses the opCodes
 
       if( mdAccessResult == NO_ERR ) //runs the simulation
          {
-            simRun(configDataPtr, mdData ); //this runs the simulation      
-            //displayMetaData( mdData );      
+            simRun(configDataPtr, metaDataPtr ); //this runs the simulation      
+            //displayMetaData( metaDataPtr );      
          }
       else
          {
             displayMetaDataError( mdAccessResult );				
          }
 
-         	mdData = clearMetaDataList( mdData );
+         	metaDataPtr = clearMetaDataList( metaDataPtr );
         
             clearConfigData( &configDataPtr );
 
