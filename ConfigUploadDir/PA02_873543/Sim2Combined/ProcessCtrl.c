@@ -28,13 +28,82 @@ void display( Boolean monitorFlag, Boolean fileFlag, char *str ,
     }
 }
 
+
+//big loop for PCB
+
+   //inner loop prog counter
+         //if( headLinkedPtr opLtr = I)
+            //call runTimer passing in headPCBPtr->ProgCounter->opValue * configData->progCycleRate);
+         // else O
+            //pthread_t pid;
+            //int runFor = configData->ioCycleRate * headPCBPtr->ProgCounter->opValue
+            //pthrea_create( &pid, NULL, runIOTimer, &runFor)
+            //pthread_join(pid NULL)
+
+//void *name( void *param)
+//{
+   runTimer( &param )
+//}
+
+//sleeper
+
+
+
+void simRun( ConfigDataType *configPtr, OpCodeType *currentPtr )
+{
+   PCB_LL *localPtr;
+   PCB_LL *headNodePtr;
+   OpCodeType CycleRate = configPtr->ioCycleRate;
+   OpCodeType CurrentVal = headNodePtr->progCounter->opValue;
+
+   
+
+   localPtr = malloc( sizeof( PCB_LL ) );
+   
+   headNodePtr = localPtr;
+
+   while( headNodePtr != NULL ) //OUTER PCB LOOP
+      {
+         while( compareString( localPtr->progCounter->opName, "End" ) != 0)  //INNER PROG COUNTER
+         {
+            if ( headNodePtr->progCounter->opLtr == "P" )//P
+            {
+               runTimer( headNodePtr->progCounter->opValue * configPtr->procCycleRate );
+
+
+            }
+
+            else if( headNodePtr->progCounter->opLtr == "I" || headNodePtr->progCounter->opLtr == "O" ) //I/O
+            {
+               pthread_t thread0;
+               int runTime = CycleRate * CurrentVal;
+               pthread_create( &thread0, NULL, runTimer, &runTime);
+               pthread_join( thread0, NULL );
+               
+            }
+            else //M
+            {
+               
+               
+
+            }
+            
+            headNodePtr->progCounter = headNodePtr->progCounter->next;
+         }
+
+         headNodePtr = headNodePtr->next;
+        
+      }
+   
+}
+/*
 void simRun(  ConfigDataType *configPtr, OpCodeType *currentPtr )
 {
 	Boolean endOfProgram = False;
    int timeRemaining;
 	//int size;
 	int tempInt;
-   ProgRun *pcb;
+   ProgRun *pcb = NULL;
    OpCodeType *linkedHeadNode = NULL;
 
   // char *fileName = (char *) malloc(MAX_STR_LEN );
@@ -226,7 +295,7 @@ void simRun(  ConfigDataType *configPtr, OpCodeType *currentPtr )
    free( messageStr );
    free( tempStr );
 }
-
+*/
 
 //function to print all required output to the log file
 void logDump( ProgRun *pcb)

@@ -19,9 +19,7 @@
 //typedef linkedlist
 typedef struct PCB_LL
 	{
-		int PID;
-		//processName
-		//counter for next process
+		OpCodeType *progCounter;
 		
 		States stateOfProcess;
 	

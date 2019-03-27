@@ -88,7 +88,7 @@ void *threadEntry( void *param )
    createDisplayString( displayStr, timeStr, messageStr );
    display( pcb->monitorFlag, pcb->fileFlag, displayStr , pcb->fileBuffer, 
             pcb->currentIndex );
-   pcb->currentIndex++;
+   pcb = pcb->next; //increment
 
    //sleep for amount of time specified
    threadSleeper( tempPtr->opValue, timeStr );
@@ -155,3 +155,4 @@ void threadSleeper ( int timeToWait, char *timeStr )
    free( tempStr );
    //exit function
 }
+
