@@ -13,6 +13,78 @@ int main( int argc, char ** argv )
 		char mdFileName[ MAX_STR_LEN ];
 		ConfigDataType *configDataPtr;
 		OpCodeType *metaDataPtr;
+        PCB_LL *currentNodePtr;
+
+        char *timeStr = (char *) malloc(MAX_STR_LEN );
+        char *displayString = (char *) malloc(MAX_STR_LEN );
+        char *messageStr = (char *) malloc(MAX_STR_LEN );
+
+        
+        if( localNodePtr->MonitorFlag == True )
+            {
+                printf( "\nSimulator Program\n"  );
+                printf( "==================\n\n" );
+                printf( "Uploading Configuration Files\n\n" );
+                printf( "Uploading Meta Data Files\n\n" );
+                printf( "=================\n" );
+                printf( "Begin Simulation\n\n" );
+            }
+
+        displayString = "   ";
+        accessTimer( ZERO_TIMER, timeStr ); 
+        messageStr = ", OS: System Start\n";
+        createDisplayString( displayString, timeStr, messageStr );
+        display( pcb->monitorFlag, pcb->fileFlag, displayString , pcb->currentIndex );
+        //pcb->currentIndex++;
+
+
+
+        displayString = "   ";
+        accessTimer( LAP_TIMER, timeStr ); 
+        messageStr = ", OS: Create Process Control Blocks\n";
+        createDisplayString( displayString, timeStr, messageStr );
+        display( pcb->monitorFlag, pcb->fileFlag, displayString , pcb->currentIndex );
+       // pcb->currentIndex++;
+
+
+
+        displayString = "   ";
+        accessTimer( LAP_TIMER, timeStr ); 
+        messageStr = ", OS: All processes initialized in New state\n";
+        createDisplayString( displayString, timeStr, messageStr );
+        display( pcb->monitorFlag, pcb->fileFlag, displayString , pcb->currentIndex );
+        //pcb->currentIndex++;
+
+
+
+        displayString = "   ";
+        accessTimer( LAP_TIMER, timeStr ); 
+        messageStr = ", OS: All processes now set in Ready state\n";
+        createDisplayString( displayString, timeStr, messageStr );
+        display( pcb->monitorFlag, pcb->fileFlag, displayString , pcb->currentIndex );
+       // pcb->currentIndex++;
+
+
+        displayString = "   ";
+        accessTimer( LAP_TIMER, timeStr );
+
+        timeRemaining = calcRemainingTime( currentPtr, configPtr );
+
+        // sprintf converts a int into string which is placed in tempStr 
+        // (this is part of <stdio.h>)
+        messageStr = ", OS: Process %s selected with ", currentNodePtr->progCounter ;
+
+        sprintf( tempStr, "%d", timeRemaining);
+        concatenateString(messageStr , tempStr);
+
+        tempStr = " ms remaining\n";
+        concatenateString(messageStr, tempStr);
+
+        // merge strings and print
+        createDisplayString( displayString, timeStr, messageStr );
+        display( pcb->monitorFlag, pcb->fileFlag, displayString , pcb->fileBuffer, 
+                    pcb->currentIndex );
+        pcb->currentIndex++;
 
     //build linked list of PCB pointing to metaData
 
@@ -29,6 +101,24 @@ int main( int argc, char ** argv )
 
 		// startLogging( &output );
 
+        if( compareString(configDataPtr->logToCode, "Both" ) == 0 || compareString( configDataPtr->logToCode = "File" ) )
+            {
+                LogFlag == True;
+            }
+        
+        else if( compareString( configDataPtr->logToCode, "Both" || "Monitor" ) )
+            {
+                MonitorFlag == True;
+            }
+
+        if( LogFlag )
+            {
+                //print to file
+            }
+        else if( MonitorFlag )
+            {
+                //print to monitor
+            }
 
          
         printf( "\nSimulator Program" );
