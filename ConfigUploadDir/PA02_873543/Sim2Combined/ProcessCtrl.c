@@ -72,7 +72,7 @@ void threadSleeper ( int timeToWait, char *timeStr )
 PCB_LL *createPCB( ConfigDataType *configPtr, OpCodeType *currentPtr, char *timeStr )
 {
    PCB_LL *headNodePtr = NULL;
-   PCB_LL *tailNodePtr = NULL;
+  // PCB_LL *tailNodePtr = NULL;
    PCB_LL *currentNodePtr = NULL;
    OpCodeType *tempPtr = currentPtr;
 
@@ -96,7 +96,7 @@ PCB_LL *createPCB( ConfigDataType *configPtr, OpCodeType *currentPtr, char *time
    //S will always be the first OP, so move 1 to the right
    tempPtr = tempPtr->next; //moves one to the right since S will always be at the beginning
    //Set the head = to the safetyPointer
-   tailNodePtr = headNodePtr;
+  // tailNodePtr = headNodePtr;
    currentNodePtr = headNodePtr;
 
    while( tempPtr != NULL )  //might be ->next
@@ -107,7 +107,7 @@ PCB_LL *createPCB( ConfigDataType *configPtr, OpCodeType *currentPtr, char *time
          {
             currentNodePtr->next = malloc( sizeof( PCB_LL ) ); //creates the next Process Node
             currentNodePtr = currentNodePtr->next; //sets current Ptr
-            tailNodePtr = currentNodePtr;
+          //  tailNodePtr = currentNodePtr;
             processNum++;
             accessTimer( LAP_TIMER, timeStr ); //lap now PCB has been created.
          }
@@ -137,7 +137,7 @@ void simRun( ConfigDataType *configPtr, OpCodeType *currentPtr )
 {
    
    //PCB_LL *localPtr;
-   PCB_LL *localNodePtr;
+   PCB_LL *localNodePtr = malloc( sizeof( PCB_LL ) );
    int CycleRate = configPtr->ioCycleRate;
    int CurrentVal = localNodePtr->progCounter->opValue;
 
@@ -147,20 +147,20 @@ void simRun( ConfigDataType *configPtr, OpCodeType *currentPtr )
 
    while( localNodePtr != NULL ) //OUTER PCB LOOP
       {
-         while( ( compareString( localNodePtr->progCounter->opLtr, "A") != 0 )
+         while( localNodePtr->progCounter->opLtr == 'A' 
              && (compareString( localNodePtr->progCounter->opName, "end" ) != 0 ) ) //INNER PROG COUNTER
          {
-            if ( localNodePtr->progCounter->opLtr == "P" )//P
+            if ( localNodePtr->progCounter->opLtr == 'P' )//P
             {
                runTimer( localNodePtr->progCounter->opValue * configPtr->procCycleRate );
             }
 
-            else if( compareString( localNodePtr->progCounter->opLtr, "I") == 0
-                      || compareString( localNodePtr->progCounter->opLtr, "O") == 0 ) //I/O
+            else if( localNodePtr->progCounter->opLtr == 'I' ||
+                        localNodePtr->progCounter->opLtr == 'O' ) //I/O
             {
                pthread_t thread0;
                int runTime = CycleRate * CurrentVal;
-               pthread_create( &thread0, NULL, runTimer, &runTime);
+               pthread_create( &thread0, NULL, threadEntry, &runTime);
                pthread_join( thread0, NULL );
             }
             // else //M

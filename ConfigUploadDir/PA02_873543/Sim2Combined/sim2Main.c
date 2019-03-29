@@ -13,7 +13,7 @@ int main( int argc, char ** argv )
 		char mdFileName[ MAX_STR_LEN ];
 		ConfigDataType *configDataPtr;
 		OpCodeType *metaDataPtr;
-        PCB_LL *currentNodePtr;
+        //PCB_LL *currentNodePtr;
 /*
         char *timeStr = (char *) malloc(MAX_STR_LEN );
         char *displayString = (char *) malloc(MAX_STR_LEN );
