@@ -52,7 +52,6 @@ void threadSleeper ( int timeToWait, char *timeStr )
 PCB_LL *createPCB( ConfigDataType *configPtr, OpCodeType *currentPtr, char *timeStr )
 {
    PCB_LL *headNodePtr = NULL;
-  // PCB_LL *tailNodePtr = NULL;
    PCB_LL *currentNodePtr = NULL;
    OpCodeType *tempPtr = currentPtr;
 
@@ -64,7 +63,6 @@ PCB_LL *createPCB( ConfigDataType *configPtr, OpCodeType *currentPtr, char *time
    headNodePtr = malloc( sizeof( PCB_LL ) );
 
    int processNum = 0;
-   // tempPtr = malloc( sizeof( PCB_LL) );
 
    headNodePtr->progCounter = tempPtr;
    headNodePtr->stateOfProcess = NEW;
@@ -87,7 +85,7 @@ PCB_LL *createPCB( ConfigDataType *configPtr, OpCodeType *currentPtr, char *time
          {
             currentNodePtr->next = malloc( sizeof( PCB_LL ) ); //creates the next Process Node
             currentNodePtr = currentNodePtr->next; //sets current Ptr
-          //  tailNodePtr = currentNodePtr;
+            currentNodePtr->stateOfProcess = NEW;
             processNum++;
             accessTimer( LAP_TIMER, timeStr ); //lap now PCB has been created.
          }
@@ -98,26 +96,15 @@ PCB_LL *createPCB( ConfigDataType *configPtr, OpCodeType *currentPtr, char *time
 
    return headNodePtr;
 }
-   //Look for new processes
-
-   /*
-   {
-         {
-            Set the newProcess = to the safetyPointer
-            Mark the last created PCB (tailNode)
-         }
-         Move forward
-         Lap now that all PCB's are made
-         returns the head of our linked list of PCB
-   }
-   }
-}
-   */
-void simRun( ConfigDataType *configPtr, OpCodeType *currentPtr )
+ 
+void simRun( ConfigDataType *configPtr, OpCodeType *currentPtr, char *timeStr )
 {
    
    //PCB_LL *localPtr;
+   timeStr [ MAX_STR_LEN ];
    PCB_LL *localNodePtr = malloc( sizeof( PCB_LL ) );
+   PCB_LL *headNodePtr = localNodePtr; //placeholder
+   int timeRemaining = calcRemainingTime( currentPtr, configPtr );
    int CycleRate = configPtr->ioCycleRate;
    int CurrentVal = localNodePtr->progCounter->opValue;
 
@@ -127,9 +114,46 @@ void simRun( ConfigDataType *configPtr, OpCodeType *currentPtr )
 
    while( localNodePtr != NULL ) //OUTER PCB LOOP
       {
+         accessTimer( ZERO_TIMER, timeStr);
+         printf( "OS: System Start\n" );
+
+         accessTimer( LAP_TIMER, timeStr );
+         printf( "OS: Create Process Control Blocks\n" );
+         createPCB( configPtr, currentPtr, timeStr );
+
+         accessTimer( LAP_TIMER, timeStr );
+         printf( "OS: All processes initialized in New state\n" ); //done in createPCB
+
+         accessTimer( LAP_TIMER, timeStr );
+         printf( "OS: All processes now set in Ready state\n" );
+
+         while( localNodePtr != NULL )
+            {
+               localNodePtr->stateOfProcess = READY;
+               localNodePtr = localNodePtr->next;
+            }
+         localNodePtr = headNodePtr;//reset to first process.
+
+         accessTimer( LAP_TIMER, timeStr );
+         printf( "OS: Process %d selected with %d ms remaining\n", localNodePtr->PID, timeRemaining );
+
+         accessTimer( LAP_TIMER, timeStr );
+         printf( "OS: Process %d set in %s state\n\n", localNodePtr->PID, localNodePtr->stateOfProcess );
+
+         while( localNodePtr != NULL )
+            {
+               localNodePtr->stateOfProcess = RUNNING;
+               localNodePtr = localNodePtr->next;
+            }
+         localNodePtr = headNodePtr;    
+
+//start of main loop
          while( localNodePtr->progCounter->opLtr == 'A' 
              && (compareString( localNodePtr->progCounter->opName, "end" ) != 0 ) ) //INNER PROG COUNTER
          {
+            outputProc( configPtr, currentPtr, timeStr );
+
+
             if ( localNodePtr->progCounter->opLtr == 'P' )//P
             {
                runTimer( localNodePtr->progCounter->opValue * configPtr->procCycleRate );
@@ -595,7 +619,7 @@ void outputProc( ConfigDataType *configPtr, OpCodeType *currentPtr, char *timeSt
       accessTimer( LAP_TIMER, timeStr ); 
       createDisplayString( displayStr, timeStr, messageStr );
       display( pcbPtr->MonitorFlag, pcbPtr->LogFlag, displayStr, configPtr );
-      
+
    break;
 }
 

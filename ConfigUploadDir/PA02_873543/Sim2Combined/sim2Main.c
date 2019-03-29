@@ -7,7 +7,7 @@
 
 int main( int argc, char ** argv )
 	{
-
+        char *timeStr[ MAX_STR_LEN ];
 		int configAccessResult, mdAccessResult;
 		char configFileName[ MAX_STR_LEN ];
 		char mdFileName[ MAX_STR_LEN ];
@@ -72,7 +72,7 @@ int main( int argc, char ** argv )
 
         // runTimer( 0 ); //start timer
 
-        printf("");
+        
 
 
         if( argc < 2 )
@@ -89,7 +89,7 @@ int main( int argc, char ** argv )
 
         if( configAccessResult == NO_ERR )
             {
-                simRun( configDataPtr, metaDataPtr );          
+                simRun( configDataPtr, metaDataPtr, timeStr );          
             }
 
         else
@@ -112,7 +112,7 @@ int main( int argc, char ** argv )
 
       if( mdAccessResult == NO_ERR ) //runs the simulation
          {
-            simRun(configDataPtr, metaDataPtr ); //this runs the simulation      
+            simRun(configDataPtr, metaDataPtr, timeStr ); //this runs the simulation      
             //displayMetaData( metaDataPtr );      
          }
       else

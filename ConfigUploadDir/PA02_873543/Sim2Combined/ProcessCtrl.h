@@ -55,7 +55,7 @@ PCB_LL *createPCB( ConfigDataType *configPtr, OpCodeType *currentPtr, char *time
 
 
 
-void simRun( ConfigDataType *configPtr, OpCodeType *currentPtr );
+void simRun( ConfigDataType *configPtr, OpCodeType *currentPtr, char *timeStr );
 void createDisplayString ( char *displayStr, char *timeStr, char *messageStr );
 void displayLoc( Boolean monitorFlag, Boolean fileFlag, char *str, ConfigDataType *configPtr );
 void outputProc( ConfigDataType *configPtr, OpCodeType *currentPtr, char *timeStr );
