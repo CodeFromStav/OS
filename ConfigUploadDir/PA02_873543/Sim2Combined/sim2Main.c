@@ -89,7 +89,9 @@ int main( int argc, char ** argv )
 
         if( configAccessResult == NO_ERR )
             {
-                simRun( configDataPtr, metaDataPtr, timeStr );          
+               simRun( configDataPtr, metaDataPtr, timeStr );      
+               // displayConfigData( configDataPtr );      
+    
             }
 
         else
