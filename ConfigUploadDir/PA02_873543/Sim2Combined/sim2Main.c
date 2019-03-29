@@ -7,7 +7,7 @@
 
 int main( int argc, char ** argv )
 	{
-        char *timeStr[ MAX_STR_LEN ];
+        char *timeStr = (char *) malloc( MAX_STR_LEN );
 		int configAccessResult, mdAccessResult;
 		char configFileName[ MAX_STR_LEN ];
 		char mdFileName[ MAX_STR_LEN ];
