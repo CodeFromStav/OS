@@ -1,0 +1,30 @@
+mCC = gcc
+DEBUG = -g
+CFLAGS = -Wall -std=c99 -pedantic -c $(DEBUG)
+LFLAGS = -Wall -std=c99 -pedantic $(DEBUG)
+
+ runSim : sim2Main.o MetaDataAccess.o ConfigAccess.o StringUtils.o ProcessCtrl.o simtimer.o
+	$(CC) $(LFLAGS) sim2Main.o MetaDataAccess.o ConfigAccess.o StringUtils.o ProcessCtrl.o simtimer.o -pthread -o runSim
+
+ sim2Main.o : sim2Main.c
+	$(CC) $(CFLAGS) sim2Main.c
+
+ MetaDataAccess.o : MetaDataAccess.c MetaDataAccess.h
+	$(CC) $(CFLAGS) MetaDataAccess.c
+
+ ConfigAccess.o	: ConfigAccess.c ConfigAccess.h
+	$(CC) $(CFLAGS) ConfigAccess.c
+
+ ProcessCtrl.o : ProcessCtrl.c ProcessCtrl.h
+	$(CC) $(CFLAGS) ProcessCtrl.c
+
+ StringUtils.o : StringUtils.c StringUtils.h
+	$(CC) $(CFLAGS) StringUtils.c
+
+ simtimer.o : simtimer.c simtimer.h
+	$(CC) $(CFLAGS) simtimer.c
+
+
+
+ clean:
+	\rm -f *.o runSim
