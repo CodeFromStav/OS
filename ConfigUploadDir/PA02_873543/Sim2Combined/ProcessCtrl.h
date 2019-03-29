@@ -20,6 +20,7 @@
 typedef struct PCB_LL
 	{
 		OpCodeType *progCounter;
+		int PID;
 		
 		States stateOfProcess;
 	
@@ -47,15 +48,21 @@ typedef struct PCB_LL
 //iterate through and initialize these based on the Prefix
 
 
+void *threadEntry( void *param);
+void threadSleeper ( int timeToWait, char *timeStr );
+PCB_LL *createPCB( ConfigDataType *configPtr, OpCodeType *currentPtr, char *timeStr );
 
 
-void simRun(  ConfigDataType *configPtr, OpCodeType *currentPtr );
+
+
+void simRun( ConfigDataType *configPtr, OpCodeType *currentPtr );
 void createDisplayString ( char *displayStr, char *timeStr, char *messageStr );
-void display( Boolean monitorFlag, Boolean fileFlag, char *str ,
-              char **fileBuffer, int currentIndex);
+
+// void display( Boolean monitorFlag, Boolean fileFlag, char *str ,
+//               char **fileBuffer, int currentIndex);
 
 int calcRemainingTime( OpCodeType *currentPtr , ConfigDataType *configPtr );
-void logDump( ProgRun *pcb);
+//void logDump( ProgRun *pcb);
 
 
 

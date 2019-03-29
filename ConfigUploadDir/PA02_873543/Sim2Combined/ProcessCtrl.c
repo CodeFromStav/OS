@@ -15,6 +15,7 @@ void createDisplayString( char *displayString, char *timeString, char *messageSt
 }
 
 //function to display based on flags passed in
+/*
 void display( Boolean monitorFlag, Boolean fileFlag, char *str, int currentIndex)
 {
     if( monitorFlag == True )
@@ -26,7 +27,7 @@ void display( Boolean monitorFlag, Boolean fileFlag, char *str, int currentIndex
       fileBuffer[ currentIndex ] = str;
     }
 }
-
+*/
 
 //big loop for PCB
 
@@ -41,7 +42,9 @@ void display( Boolean monitorFlag, Boolean fileFlag, char *str, int currentIndex
 
 void *threadEntry( void *param)
 {
-   runTimer( &param )
+   int *intparam = (int *)param;
+   runTimer( *intparam ); //might be &param
+   return NULL;
 }
 
 //sleeper
@@ -64,6 +67,7 @@ void threadSleeper ( int timeToWait, char *timeStr )
       accessTimer( LAP_TIMER, tempStr ); 
       sscanf(timeStr, "%lf", &tempDouble);
    }
+}
 
 PCB_LL *createPCB( ConfigDataType *configPtr, OpCodeType *currentPtr, char *timeStr )
 {
@@ -85,7 +89,7 @@ PCB_LL *createPCB( ConfigDataType *configPtr, OpCodeType *currentPtr, char *time
    headNodePtr->progCounter = tempPtr;
    headNodePtr->stateOfProcess = NEW;
    headNodePtr->PID = processNum;
-   headNodePtr->timeRemaning = calcRemainingTime( tempPtr, configPtr );
+   headNodePtr->timeRemaining = calcRemainingTime( tempPtr, configPtr );
    headNodePtr->next = NULL;
 
 
@@ -98,8 +102,8 @@ PCB_LL *createPCB( ConfigDataType *configPtr, OpCodeType *currentPtr, char *time
    while( tempPtr != NULL )  //might be ->next
    {
       //if the process is A, and its a start, then make a new PCB
-      if( ( compareString( currentNodePtr->progCounter->opLtr, "A") == 0 )
-             && (compareString( currentNodePtr->progCounter->opName, "Start" ) == 0 ) )
+      if( tempPtr->opLtr == 'A' 
+             && (compareString( tempPtr->opName, "start" ) == 0 ) )
          {
             currentNodePtr->next = malloc( sizeof( PCB_LL ) ); //creates the next Process Node
             currentNodePtr = currentNodePtr->next; //sets current Ptr
@@ -134,8 +138,8 @@ void simRun( ConfigDataType *configPtr, OpCodeType *currentPtr )
    
    //PCB_LL *localPtr;
    PCB_LL *localNodePtr;
-   OpCodeType CycleRate = configPtr->ioCycleRate;
-   OpCodeType CurrentVal = localNodePtr->progCounter->opValue;
+   int CycleRate = configPtr->ioCycleRate;
+   int CurrentVal = localNodePtr->progCounter->opValue;
 
    // localPtr = malloc( sizeof( PCB_LL ) );
    
@@ -144,26 +148,27 @@ void simRun( ConfigDataType *configPtr, OpCodeType *currentPtr )
    while( localNodePtr != NULL ) //OUTER PCB LOOP
       {
          while( ( compareString( localNodePtr->progCounter->opLtr, "A") != 0 )
-             && (compareString( localNodePtr->progCounter->opName, "End" ) != 0 ) ) //INNER PROG COUNTER
+             && (compareString( localNodePtr->progCounter->opName, "end" ) != 0 ) ) //INNER PROG COUNTER
          {
             if ( localNodePtr->progCounter->opLtr == "P" )//P
             {
                runTimer( localNodePtr->progCounter->opValue * configPtr->procCycleRate );
             }
 
-            else if( localNodePtr->progCounter->opLtr == "I" || localNodePtr->progCounter->opLtr == "O" ) //I/O
+            else if( compareString( localNodePtr->progCounter->opLtr, "I") == 0
+                      || compareString( localNodePtr->progCounter->opLtr, "O") == 0 ) //I/O
             {
                pthread_t thread0;
                int runTime = CycleRate * CurrentVal;
                pthread_create( &thread0, NULL, runTimer, &runTime);
                pthread_join( thread0, NULL );
             }
-            else //M
-            {
+            // else //M
+            // {
                
                
 
-            }
+            // }
             
             localNodePtr->progCounter = localNodePtr->progCounter->next;
          }
@@ -379,7 +384,7 @@ void simRun(  ConfigDataType *configPtr, OpCodeType *currentPtr )
    free( tempStr );
 }
 */
-
+/*
 //function to print all required output to the log file
 void logDump( ProgRun *pcb)
 {
@@ -457,7 +462,7 @@ void logDump( ProgRun *pcb)
    free( fileName );
 
 }
-
+*/
 
 
 // void ProcessType ( ConfigDataType *configPtr, OpCodeType *currentPtr )
@@ -528,3 +533,5 @@ int calcRemainingTime( OpCodeType *currentPtr , ConfigDataType *configPtr )
 
 		return remainingTime;		
 	}
+
+   
