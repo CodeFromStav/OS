@@ -70,7 +70,9 @@ int main( int argc, char ** argv )
         printf( "\n==================" );
         printf( "\nBegin Simulation\n" );
 
-        runTimer( 0 ); //start timer
+        // runTimer( 0 ); //start timer
+
+        printf("");
 
 
         if( argc < 2 )

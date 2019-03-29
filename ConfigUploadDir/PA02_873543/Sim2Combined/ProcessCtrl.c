@@ -7,27 +7,7 @@
 
 
 
-//function to create the string output to either the file or the user
-void createDisplayString( char *displayString, char *timeString, char *messageStr )
-{
-   concatenateString( displayString, timeString );
-   concatenateString( displayString, messageStr );
-}
 
-//function to display based on flags passed in
-/*
-void display( Boolean monitorFlag, Boolean fileFlag, char *str, int currentIndex)
-{
-    if( monitorFlag == True )
-    {
-       printf( "%s", str );
-    }
-    if( fileFlag == True )
-    {
-      fileBuffer[ currentIndex ] = str;
-    }
-}
-*/
 
 //big loop for PCB
 
@@ -533,5 +513,91 @@ int calcRemainingTime( OpCodeType *currentPtr , ConfigDataType *configPtr )
 
 		return remainingTime;		
 	}
+
+void createDisplayString( char *displayString, char *timeString, char *messageStr )
+{
+   concatenateString( displayString, timeString );
+   concatenateString( displayString, messageStr );
+}
+
+//function to display based on flags passed in
+
+void displayLoc( Boolean monitorFlag, Boolean fileFlag, char *str, ConfigDataType *configPtr )
+{
+    if( monitorFlag )
+    {
+       printf( "%s", str );
+    }
+    if( fileFlag )
+    {
+      fprintf( configPtr->logToFileName, str );
+    }
+}
+
+void outputProc( ConfigDataType *configPtr, OpCodeType *currentPtr, char *timeStr )
+{
+   //char *timeStr[MAX_STR_LEN];
+   PCB_LL *pcbPtr;
+   char *displayStr = (", Process: %d, ", pcbPtr->PID );
+   char *messageStr[ MAX_STR_LEN ];
+   char *operatingChar = currentPtr->opLtr;
+
+   switch( operatingChar )
+   {
+   case 'A':
+      // Program application used with Start and End
+      if( compareString( currentPtr->opName, "start") == 0 )
+        {
+           messageStr = "run operation start\n";
+        }
+      else if( compareString( currentPtr->opName, "end" ) == 0 )
+        {
+           messageStr = "run operation end\n";
+        }
+      accessTimer( LAP_TIMER, timeStr ); 
+      createDisplayString( displayStr, timeStr, messageStr );
+      display( pcbPtr->MonitorFlag, pcbPtr->LogFlag, displayStr, configPtr );
+
+   break;
+
+   case 'I':
+
+      messageStr = tempPtr->opName;
+      concatenateString( messageStr, " input start\n" );
+      accessTimer( LAP_TIMER, timeStr ); 
+      createDisplayString( displayStr, timeStr, messageStr );
+      display( pcbPtr->MonitorFlag, pcbPtr->LogFlag, displayStr, configPtr );
+
+      //sleep for amount of time specified
+      threadSleeper( tempPtr->opValue, timeStr );
+
+      messageStr = tempPtr->opName;
+      concatenateString( messageStr, " input end\n" );
+      accessTimer( LAP_TIMER, timeStr ); 
+      createDisplayString( displayStr, timeStr, messageStr );
+      display( pcbPtr->MonitorFlag, pcbPtr->LogFlag, displayStr, configPtr );
+
+   break;
+
+   case 'O':
+      // Output used with descriptors
+      messageStr = tempPtr->opName;
+      concatenateString( messageStr, " output start\n" );
+      accessTimer( LAP_TIMER, timeStr ); 
+      createDisplayString( displayStr, timeStr, messageStr );
+      display( pcbPtr->MonitorFlag, pcbPtr->LogFlag, displayStr, configPtr );
+
+      //sleep for amount of time specified
+      threadSleeper( tempPtr->opValue, timeStr );
+      
+      messageStr = tempPtr->opName;
+      concatenateString( messageStr, " output end\n" );
+      accessTimer( LAP_TIMER, timeStr ); 
+      createDisplayString( displayStr, timeStr, messageStr );
+      display( pcbPtr->MonitorFlag, pcbPtr->LogFlag, displayStr, configPtr );
+      
+   break;
+}
+
 
    
