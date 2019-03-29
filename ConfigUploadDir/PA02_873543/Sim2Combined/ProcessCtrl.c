@@ -65,37 +65,59 @@ void threadSleeper ( int timeToWait, char *timeStr )
       sscanf(timeStr, "%lf", &tempDouble);
    }
 
-void createPCB( ConfigDataType *configPtr, OpCodeType *currentPtr )
+PCB_LL *createPCB( ConfigDataType *configPtr, OpCodeType *currentPtr, char *timeStr )
 {
    PCB_LL *headNodePtr = NULL;
    PCB_LL *tailNodePtr = NULL;
-   PCB_LL *tempPtr = NULL;
    PCB_LL *currentNodePtr = NULL;
+   OpCodeType *tempPtr = currentPtr;
+
 
    accessTimer( LAP_TIMER, timeStr ); //possibly initialize timeStr
+   printf("%s, OS: Create Process Control Blocks \n", timeStr );
 
 
-   tempPtr = malloc( sizeof( PCB_LL) );
+   headNodePtr = malloc( sizeof( PCB_LL ) );
+
+   int processNum = 0;
+   // tempPtr = malloc( sizeof( PCB_LL) );
+
+   headNodePtr->progCounter = tempPtr;
+   headNodePtr->stateOfProcess = NEW;
+   headNodePtr->PID = processNum;
+   headNodePtr->timeRemaning = calcRemainingTime( tempPtr, configPtr );
+   headNodePtr->next = NULL;
 
 
    //S will always be the first OP, so move 1 to the right
    tempPtr = tempPtr->next; //moves one to the right since S will always be at the beginning
    //Set the head = to the safetyPointer
-   headNodePtr = tempPtr;
    tailNodePtr = headNodePtr;
    currentNodePtr = headNodePtr;
 
-   while( currentNodePtr != NULL )
+   while( tempPtr != NULL )  //might be ->next
    {
+      //if the process is A, and its a start, then make a new PCB
+      if( ( compareString( currentNodePtr->progCounter->opLtr, "A") == 0 )
+             && (compareString( currentNodePtr->progCounter->opName, "Start" ) == 0 ) )
+         {
+            currentNodePtr->next = malloc( sizeof( PCB_LL ) ); //creates the next Process Node
+            currentNodePtr = currentNodePtr->next; //sets current Ptr
+            tailNodePtr = currentNodePtr;
+            processNum++;
+            accessTimer( LAP_TIMER, timeStr ); //lap now PCB has been created.
+         }
 
+      tempPtr = tempPtr->next;
 
-      currentNodePtr = currentNodePtr->next;
    }
+
+   return headNodePtr;
+}
    //Look for new processes
 
    /*
    {
-      if the process is A, and its a start, then make a new PCB
          {
             Set the newProcess = to the safetyPointer
             Mark the last created PCB (tailNode)
