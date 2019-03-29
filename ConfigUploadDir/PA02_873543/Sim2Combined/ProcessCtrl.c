@@ -39,7 +39,7 @@ void display( Boolean monitorFlag, Boolean fileFlag, char *str, int currentIndex
             //pthrea_create( &pid, NULL, runIOTimer, &runFor)
             //pthread_join(pid NULL)
 
-void *name( void *param)
+void *threadEntry( void *param)
 {
    runTimer( &param )
 }
@@ -65,6 +65,48 @@ void threadSleeper ( int timeToWait, char *timeStr )
       sscanf(timeStr, "%lf", &tempDouble);
    }
 
+void createPCB( ConfigDataType *configPtr, OpCodeType *currentPtr )
+{
+   PCB_LL *headNodePtr = NULL;
+   PCB_LL *tailNodePtr = NULL;
+   PCB_LL *tempPtr = NULL;
+   PCB_LL *currentNodePtr = NULL;
+
+   accessTimer( LAP_TIMER, timeStr ); //possibly initialize timeStr
+
+
+   tempPtr = malloc( sizeof( PCB_LL) );
+
+
+   //S will always be the first OP, so move 1 to the right
+   tempPtr = tempPtr->next; //moves one to the right since S will always be at the beginning
+   //Set the head = to the safetyPointer
+   headNodePtr = tempPtr;
+   tailNodePtr = headNodePtr;
+   currentNodePtr = headNodePtr;
+
+   while( currentNodePtr != NULL )
+   {
+
+
+      currentNodePtr = currentNodePtr->next;
+   }
+   //Look for new processes
+
+   /*
+   {
+      if the process is A, and its a start, then make a new PCB
+         {
+            Set the newProcess = to the safetyPointer
+            Mark the last created PCB (tailNode)
+         }
+         Move forward
+         Lap now that all PCB's are made
+         returns the head of our linked list of PCB
+   }
+   }
+}
+   */
 void simRun( ConfigDataType *configPtr, OpCodeType *currentPtr )
 {
    
@@ -73,17 +115,14 @@ void simRun( ConfigDataType *configPtr, OpCodeType *currentPtr )
    OpCodeType CycleRate = configPtr->ioCycleRate;
    OpCodeType CurrentVal = localNodePtr->progCounter->opValue;
 
-   
-
-
-
    // localPtr = malloc( sizeof( PCB_LL ) );
    
   // localNodePtr = localPtr;
 
    while( localNodePtr != NULL ) //OUTER PCB LOOP
       {
-         while( ( compareString( localNodePtr->progCounter->opLtr, "A") != 0 ) && (compareString( localNodePtr->progCounter->opName, "End" ) != 0 ) ) //INNER PROG COUNTER
+         while( ( compareString( localNodePtr->progCounter->opLtr, "A") != 0 )
+             && (compareString( localNodePtr->progCounter->opName, "End" ) != 0 ) ) //INNER PROG COUNTER
          {
             if ( localNodePtr->progCounter->opLtr == "P" )//P
             {
