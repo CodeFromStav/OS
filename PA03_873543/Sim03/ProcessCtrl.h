@@ -15,6 +15,15 @@
  } States;
 
 
+typedef struct MMU
+	{
+		int memID;
+		int memBase;
+		int memOffSet;
+
+		struct MMU * next;
+
+	} MMU;
 
 //typedef linkedlist
 typedef struct PCB_LL

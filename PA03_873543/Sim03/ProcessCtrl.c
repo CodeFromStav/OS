@@ -90,8 +90,8 @@ void simRun( ConfigDataType *configPtr, OpCodeType *currentPtr, char *timeStr )
    PCB_LL *localNodePtr = malloc( sizeof( PCB_LL ) );
    PCB_LL *headNodePtr = localNodePtr; //placeholder
    int timeRemaining = calcRemainingTime( currentPtr, configPtr );
-   int CycleRate = configPtr->ioCycleRate;
-   int CurrentVal = localNodePtr->progCounter->opValue;
+   int cycleRate = configPtr->ioCycleRate;
+   int currentVal = localNodePtr->progCounter->opValue;
 
    // localPtr = malloc( sizeof( PCB_LL ) );
    
@@ -140,21 +140,33 @@ void simRun( ConfigDataType *configPtr, OpCodeType *currentPtr, char *timeStr )
 
             if ( localNodePtr->progCounter->opLtr == 'P' )//P
             {
-               runTimer( localNodePtr->progCounter->opValue * configPtr->procCycleRate );
+               // runTimer( localNodePtr->progCounter->opValue * configPtr->procCycleRate );
+               runTimer( currentVal * cycleRate );
             }
 
             else if( localNodePtr->progCounter->opLtr == 'I' ||
                         localNodePtr->progCounter->opLtr == 'O' ) //I/O
             {
                pthread_t thread0;
-               int runTime = CycleRate * CurrentVal;
+               int runTime = cycleRate * currentVal;
                pthread_create( &thread0, NULL, threadEntry, &runTime);
                pthread_join( thread0, NULL );
             }
-            // else //M
-            // {
+            else //M
+            {
+               //do i have enough memory to do this, if i do report it, if i dont report that
+               //if you fail, end process and move to next pcb. Print segfault and 
+               int offSet = currentVal % 1000; //AAA
+               currentVal -= offSet; //SSBBBAAA - AAA = SSBBB
+               int base = currentVal % 1000; //BBB
+               int ID = currentVal - base; //SSBBB - BBB = SS
+
+               MMU *newMMU->memOffSet = offset;
+
+               //int numbers[3] = { digitAOne, digitATwo, digitAThree };
+
                
-            // }
+            }
             
             localNodePtr->progCounter = localNodePtr->progCounter->next;
          }
