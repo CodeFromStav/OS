@@ -9,20 +9,15 @@
 void *threadEntry( void *param)
 {
    int *intparam = (int *)param;
-   runTimer( *intparam ); //might be &param
+   runTimer( *intparam );
    return NULL;
 }
 
-//sleeper
 void threadSleeper ( int timeToWait, char *timeStr )
 {
    double toTime, tempDouble;
    char *tempStr  = (char *) malloc(MAX_STR_LEN );
-
-   //get miliseconds in proper format (i.e. 
    double waitTime = timeToWait / 100;
-   // this is to make sure the math is correct (both numbers will be the same 
-   // length
    waitTime += 0.000000;
    sscanf(timeStr, "%lf", &toTime);
    toTime += waitTime;
@@ -41,10 +36,8 @@ PCB_LL *createPCB( ConfigDataType *configPtr, OpCodeType *currentPtr, char *time
    PCB_LL *currentNodePtr = NULL;
    OpCodeType *tempPtr = currentPtr;
 
-
    accessTimer( LAP_TIMER, timeStr ); //possibly initialize timeStr
    printf("%s, OS: Create Process Control Blocks \n", timeStr );
-
 
    headNodePtr = malloc( sizeof( PCB_LL ) );
 
@@ -56,11 +49,7 @@ PCB_LL *createPCB( ConfigDataType *configPtr, OpCodeType *currentPtr, char *time
    headNodePtr->timeRemaining = calcRemainingTime( tempPtr, configPtr );
    headNodePtr->next = NULL;
 
-
-   //S will always be the first OP, so move 1 to the right
    tempPtr = tempPtr->next; //moves one to the right since S will always be at the beginning
-   //Set the head = to the safetyPointer
-  // tailNodePtr = headNodePtr;
    currentNodePtr = headNodePtr;
 
    while( tempPtr != NULL )  //might be ->next
@@ -85,20 +74,14 @@ PCB_LL *createPCB( ConfigDataType *configPtr, OpCodeType *currentPtr, char *time
  
 void simRun( ConfigDataType *configPtr, OpCodeType *currentPtr, char *timeStr )
 {
-   
-   //PCB_LL *localPtr;
    PCB_LL *localNodePtr = malloc( sizeof( PCB_LL ) );
    PCB_LL *headNodePtr = localNodePtr; //placeholder
    int timeRemaining = calcRemainingTime( currentPtr, configPtr );
    int cycleRate = configPtr->ioCycleRate;
    int currentVal = localNodePtr->progCounter->opValue;
 
-   // localPtr = malloc( sizeof( PCB_LL ) );
-   
-  // localNodePtr = localPtr;
-
    while( localNodePtr != NULL ) //OUTER PCB LOOP
-      {
+   {
          accessTimer( ZERO_TIMER, timeStr);
          printf( "OS: System Start\n" );
 
@@ -113,10 +96,11 @@ void simRun( ConfigDataType *configPtr, OpCodeType *currentPtr, char *timeStr )
          printf( "OS: All processes now set in Ready state\n" );
 
          while( localNodePtr != NULL )
-            {
-               localNodePtr->stateOfProcess = READY;
-               localNodePtr = localNodePtr->next;
-            }
+         {
+            localNodePtr->stateOfProcess = READY;
+            localNodePtr = localNodePtr->next;
+         }
+
          localNodePtr = headNodePtr;//reset to first process.
 
          accessTimer( LAP_TIMER, timeStr );
@@ -126,21 +110,18 @@ void simRun( ConfigDataType *configPtr, OpCodeType *currentPtr, char *timeStr )
          printf( "OS: Process %d set in %d state\n\n", localNodePtr->PID, localNodePtr->stateOfProcess );
 
          while( localNodePtr != NULL )
-            {
-               localNodePtr->stateOfProcess = RUNNING;
-               localNodePtr = localNodePtr->next;
-            }
+         {
+            localNodePtr->stateOfProcess = RUNNING;
+            localNodePtr = localNodePtr->next;
+         }
          localNodePtr = headNodePtr;    
 
-//start of main loop
+         //start of main loop
          while( localNodePtr->progCounter->opLtr == 'A' 
-             && (compareString( localNodePtr->progCounter->opName, "end" ) != 0 ) ) //INNER PROG COUNTER
+             && (compareString( localNodePtr->progCounter->opName, "end" ) != 0 ) )
          {
-           // outputProc( configPtr, currentPtr, timeStr ); //outputs based on opLtr
-
             if ( localNodePtr->progCounter->opLtr == 'P' )//P
             {
-               // runTimer( localNodePtr->progCounter->opValue * configPtr->procCycleRate );
                runTimer( currentVal * cycleRate );
             }
 
@@ -152,16 +133,12 @@ void simRun( ConfigDataType *configPtr, OpCodeType *currentPtr, char *timeStr )
                pthread_create( &thread0, NULL, threadEntry, &runTime);
                pthread_join( thread0, NULL );
             }
+
             else //M
             {
-               //do i have enough memory to do this, if i do report it, if i dont report that
-               //if you fail, end process and move to next pcb. Print segfault and 
-               int memAvail = configPtr->memAvailable;
                MMU *newMMU = malloc(sizeof( MMU ) );
                MMU *temp = newMMU;
-               
-
-
+               int memAvail = configPtr->memAvailable;
                int offSet = currentVal % 1000; //AAA
                currentVal -= offSet; //SSBBBAAA - AAA = SSBBB
                int base = currentVal % 1000; //BBB
@@ -169,25 +146,22 @@ void simRun( ConfigDataType *configPtr, OpCodeType *currentPtr, char *timeStr )
 
                newMMU->memID = ID;
                newMMU->memBase = base;
-               newMMU->memOffSet = offset;
+               newMMU->memOffSet = offSet;
                memAvail -= newMMU->memOffSet; //Avail - offset = avail
+
                while(temp->next)
                {
-
-               
-               if( newMMU->memOffSet <= memAvail ) //if offset is within avail
-               {
-                  //report success
-                  printf( "MMU succesful allocate" );
-
-               }
-               else
-               {
-                  //create fake segfault ***
-                  printf( ", OS: Process: # experiences segmentaton fault " );
-
-                  localNodePtr = localNodePtr->next; //skip to next Process
-               }
+                  if( newMMU->memOffSet <= memAvail ) //if offset is within avail
+                  {
+                     //report success
+                     printf( "MMU succesful allocate" );
+                  }
+                  else
+                  {
+                     //create fake segfault ***
+                     printf( ", OS: Process: # experiences segmentaton fault " );
+                     localNodePtr = localNodePtr->next; //skip to next Process
+                  }
                }
                
             }
@@ -199,11 +173,9 @@ void simRun( ConfigDataType *configPtr, OpCodeType *currentPtr, char *timeStr )
          localNodePtr = localNodePtr->next;
          free( newMMU );
 
-
-      }   
+   }   
 
 }
-
 
 void runBubbleSort( PCB_LL *startNodePtr )
 {
@@ -213,7 +185,6 @@ void runBubbleSort( PCB_LL *startNodePtr )
 
    int currentVal = currentNodePtr->progCounter->opValue;
    int nextVal = currentNodePtr->progCounter->next->opValue;
-
 
    if( startNodePtr == NULL )
       {
@@ -230,7 +201,6 @@ void runBubbleSort( PCB_LL *startNodePtr )
          {
             swap( tempPtr, tempPtr->next );
             swapped = True;
-
          }
       }
       currentNodePtr = tempPtr;
@@ -249,24 +219,151 @@ void swap( PCB_LL *ptrOne, PCB_LL *ptrTwo )
    valTwo = temp;
 }
 
+int calcRemainingTime( OpCodeType *currentPtr , ConfigDataType *configPtr )
+	{
+		int opCodeValue = currentPtr->opValue;
+		double remainingTime = 0.0;
+		int procCycleRate = configPtr->procCycleRate;
+		int ioCycleRate = configPtr->ioCycleRate;
+
+		while( currentPtr != NULL )
+			{
+
+				if ( currentPtr->opLtr == 'P' )
+					{
+						remainingTime += ( opCodeValue * procCycleRate ); 
+					}
+
+				else // 'I/O'
+					{
+						remainingTime += ( opCodeValue * ioCycleRate );
+					}
+
+				currentPtr = currentPtr->next;
+			}
+
+		return remainingTime;		
+	}
+
+void createDisplayString( char *displayString, char *timeString, char *messageStr )
+{
+   concatenateString( displayString, timeString );
+   concatenateString( displayString, messageStr );
+}
+
+//function to display based on flags passed in
+
+void displayLoc( Boolean monitorFlag, Boolean fileFlag, char *str, ConfigDataType *configPtr )
+{
+   FILE *fptr = fopen( configPtr->logToFileName, "w" );
+
+   if( monitorFlag )
+    {
+       printf( "%s", str );
+    }
+
+   if( fileFlag )
+    {
+      fprintf( fptr,"%s", str );
+    }
+}
+
+void outputProc( ConfigDataType *configPtr, OpCodeType *currentPtr, char *timeStr )
+{
+   PCB_LL *pcbPtr = malloc( sizeof( PCB_LL ) );
+   timeStr = (char *) malloc( MAX_STR_LEN );
+   char* displayStr = (char *) malloc( MAX_STR_LEN );
+   char *messageStr = (char *) malloc( MAX_STR_LEN );
+   char operatingChar = currentPtr->opLtr;
+   MMU *mmuPtr = malloc( sizeof( MMU ) );
+   
+   displayStr = (", Process: %d ", pcbPtr->PID);  
+
+   switch( operatingChar )
+   {
+      case 'A':
+         // Program application used with Start and End
+         if( compareString( currentPtr->opName, "start") == 0 )
+         {
+            messageStr = "run operation start\n";
+         }
+         else if( compareString( currentPtr->opName, "end" ) == 0 )
+         {
+            messageStr = "run operation end\n";
+         }
+         accessTimer( LAP_TIMER, timeStr ); 
+         createDisplayString( displayStr, timeStr, messageStr );
+         displayLoc( pcbPtr->MonitorFlag, pcbPtr->LogFlag, displayStr, configPtr );
+
+      break;
+
+      case 'I':
+
+         messageStr = currentPtr->opName;
+         concatenateString( messageStr, " input start\n" );
+         accessTimer( LAP_TIMER, timeStr ); 
+         createDisplayString( displayStr, timeStr, messageStr );
+         displayLoc( pcbPtr->MonitorFlag, pcbPtr->LogFlag, displayStr, configPtr );
+
+         //sleep for amount of time specified
+         threadSleeper( currentPtr->opValue, timeStr );
+
+         messageStr = currentPtr->opName;
+         concatenateString( messageStr, " input end\n" );
+         accessTimer( LAP_TIMER, timeStr ); 
+         createDisplayString( displayStr, timeStr, messageStr );
+         displayLoc( pcbPtr->MonitorFlag, pcbPtr->LogFlag, displayStr, configPtr );
+
+      break;
+
+      case 'O':
+         // Output used with descriptors
+         messageStr = currentPtr->opName;
+         concatenateString( messageStr, " output start\n" );
+         accessTimer( LAP_TIMER, timeStr ); 
+         createDisplayString( displayStr, timeStr, messageStr );
+         displayLoc( pcbPtr->MonitorFlag, pcbPtr->LogFlag, displayStr, configPtr );
+
+         //sleep for amount of time specified
+         threadSleeper( currentPtr->opValue, timeStr );
+         
+         messageStr = currentPtr->opName;
+         concatenateString( messageStr, " output end\n" );
+         accessTimer( LAP_TIMER, timeStr ); 
+         createDisplayString( displayStr, timeStr, messageStr );
+         displayLoc( pcbPtr->MonitorFlag, pcbPtr->LogFlag, displayStr, configPtr );
+
+      break;
+
+      case 'M':
+
+         if( compareString( currentPtr->opName, "allocate" ) == 0 )
+         {
+            messageStr = ", MMU attempt to allocate %d\n", currentPtr->opValue;
+         }
+         else
+         {
+            messageStr = ", MMU attempt to access %d\n", currentPtr->opValue;
+         }
+         
+         messageStr = currentPtr->opName;
+         concatenateString( messageStr, " output start\n" );
+         accessTimer( LAP_TIMER, timeStr ); 
+         createDisplayString( displayStr, timeStr, messageStr );
+         displayLoc( pcbPtr->MonitorFlag, pcbPtr->LogFlag, displayStr, configPtr );
+
+         //sleep for amount of time specified
+         threadSleeper( currentPtr->opValue, timeStr );
+         
+         messageStr = currentPtr->opName;
+         concatenateString( messageStr, " output end\n" );
+         accessTimer( LAP_TIMER, timeStr ); 
+         createDisplayString( displayStr, timeStr, messageStr );
+         displayLoc( pcbPtr->MonitorFlag, pcbPtr->LogFlag, displayStr, configPtr );
 
 
-// void runBubbleSort( int arr[], int size )
-// {
-//    int indexOne, indexTwo, temp;
-//    for (indexOne = 0; indexOne < size - 1; indexOne++)
-//    {
-//       for( indexTwo; indexTwo < size - indexOne - 1; indexTwo++ )
-//       {
-//          if( arr[ indexTwo ] > arr[ indexTwo + 1 ] )
-//          {
-//             temp = arr[ indexTwo ];
-//             arr[ indexTwo ] = arr[ indexTwo + 1 ];
-//             arr[ indexTwo + 1 ] = temp;
-//          }
-//       }
-//    }
-
+      break;
+   }
 }
 
 /*
@@ -346,156 +443,4 @@ void logDump( ProgRun *pcb)
    free(anotherTempStr);
    free( fileName );
 }
-*/
-
-
-int calcRemainingTime( OpCodeType *currentPtr , ConfigDataType *configPtr )
-	{
-		int opCodeValue = currentPtr->opValue;
-		double remainingTime = 0.0;
-		int procCycleRate = configPtr->procCycleRate;
-		int ioCycleRate = configPtr->ioCycleRate;
-
-		while( currentPtr != NULL )
-			{
-
-				if ( currentPtr->opLtr == 'P' )
-					{
-						remainingTime += ( opCodeValue * procCycleRate ); 
-					}
-
-				else // 'I/O'
-					{
-						remainingTime += ( opCodeValue * ioCycleRate );
-					}
-
-				currentPtr = currentPtr->next;
-			}
-
-		return remainingTime;		
-	}
-
-void createDisplayString( char *displayString, char *timeString, char *messageStr )
-{
-   concatenateString( displayString, timeString );
-   concatenateString( displayString, messageStr );
-}
-
-//function to display based on flags passed in
-
-void displayLoc( Boolean monitorFlag, Boolean fileFlag, char *str, ConfigDataType *configPtr )
-{
-   FILE *fptr = fopen( configPtr->logToFileName, "w" );
-
-    if( monitorFlag )
-    {
-       printf( "%s", str );
-    }
-    if( fileFlag )
-    {
-      fprintf( fptr,"%s", str );
-    }
-}
-
-void outputProc( ConfigDataType *configPtr, OpCodeType *currentPtr, char *timeStr )
-{
-   //char *timeStr[MAX_STR_LEN];
-   PCB_LL *pcbPtr = malloc( sizeof( PCB_LL ) );
-   timeStr = (char *) malloc( MAX_STR_LEN );
-   char* displayStr = (char *) malloc( MAX_STR_LEN );
-   char *messageStr = (char *) malloc( MAX_STR_LEN );
-   char operatingChar = currentPtr->opLtr;
-   MMU *mmuPtr = malloc( sizeof( MMU ) );
-   
-   //displayStr = (", Process: %d ", pcbPtr->PID);  
-   displayStr = ", Process: 0, ";
-
-   switch( operatingChar )
-   {
-      case 'A':
-         // Program application used with Start and End
-         if( compareString( currentPtr->opName, "start") == 0 )
-         {
-            messageStr = "run operation start\n";
-         }
-         else if( compareString( currentPtr->opName, "end" ) == 0 )
-         {
-            messageStr = "run operation end\n";
-         }
-         accessTimer( LAP_TIMER, timeStr ); 
-         createDisplayString( displayStr, timeStr, messageStr );
-         displayLoc( pcbPtr->MonitorFlag, pcbPtr->LogFlag, displayStr, configPtr );
-
-      break;
-
-      case 'I':
-
-         messageStr = currentPtr->opName;
-         concatenateString( messageStr, " input start\n" );
-         accessTimer( LAP_TIMER, timeStr ); 
-         createDisplayString( displayStr, timeStr, messageStr );
-         displayLoc( pcbPtr->MonitorFlag, pcbPtr->LogFlag, displayStr, configPtr );
-
-         //sleep for amount of time specified
-         threadSleeper( currentPtr->opValue, timeStr );
-
-         messageStr = currentPtr->opName;
-         concatenateString( messageStr, " input end\n" );
-         accessTimer( LAP_TIMER, timeStr ); 
-         createDisplayString( displayStr, timeStr, messageStr );
-         displayLoc( pcbPtr->MonitorFlag, pcbPtr->LogFlag, displayStr, configPtr );
-
-      break;
-
-      case 'O':
-         // Output used with descriptors
-         messageStr = currentPtr->opName;
-         concatenateString( messageStr, " output start\n" );
-         accessTimer( LAP_TIMER, timeStr ); 
-         createDisplayString( displayStr, timeStr, messageStr );
-         displayLoc( pcbPtr->MonitorFlag, pcbPtr->LogFlag, displayStr, configPtr );
-
-         //sleep for amount of time specified
-         threadSleeper( currentPtr->opValue, timeStr );
-         
-         messageStr = currentPtr->opName;
-         concatenateString( messageStr, " output end\n" );
-         accessTimer( LAP_TIMER, timeStr ); 
-         createDisplayString( displayStr, timeStr, messageStr );
-         displayLoc( pcbPtr->MonitorFlag, pcbPtr->LogFlag, displayStr, configPtr );
-
-      break;
-
-      case 'M':
-
-         if( compareString( currentPtr->opName == "allocate" ) == 0 )
-         {
-            messageStr = ", MMU attempt to allocate %d\n", currentPtr->opValue;
-         }
-         else
-         {
-            messageStr = ", MMU attempt to access %d\n", currentPtr->opValue;
-         }
-         
-         messageStr = currentPtr->opName;
-         concatenateString( messageStr, " output start\n" );
-         accessTimer( LAP_TIMER, timeStr ); 
-         createDisplayString( displayStr, timeStr, messageStr );
-         displayLoc( pcbPtr->MonitorFlag, pcbPtr->LogFlag, displayStr, configPtr );
-
-         //sleep for amount of time specified
-         threadSleeper( currentPtr->opValue, timeStr );
-         
-         messageStr = currentPtr->opName;
-         concatenateString( messageStr, " output end\n" );
-         accessTimer( LAP_TIMER, timeStr ); 
-         createDisplayString( displayStr, timeStr, messageStr );
-         displayLoc( pcbPtr->MonitorFlag, pcbPtr->LogFlag, displayStr, configPtr );
-
-
-      break;
-   }
-}
-
-
-   
+*/   

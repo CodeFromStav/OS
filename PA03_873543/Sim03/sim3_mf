@@ -4,10 +4,10 @@ CFLAGS = -Wall -std=c99 -pedantic -c $(DEBUG)
 LFLAGS = -Wall -std=c99 -pedantic $(DEBUG)
 
  runSim : sim3Main.o MetaDataAccess.o ConfigAccess.o StringUtils.o ProcessCtrl.o simtimer.o
-	$(CC) $(LFLAGS) sim2Main.o MetaDataAccess.o ConfigAccess.o StringUtils.o ProcessCtrl.o simtimer.o -pthread -o runSim
+	$(CC) $(LFLAGS) sim3Main.o MetaDataAccess.o ConfigAccess.o StringUtils.o ProcessCtrl.o simtimer.o -pthread -o runSim
 
  sim3Main.o : sim3Main.c
-	$(CC) $(CFLAGS) sim2Main.c
+	$(CC) $(CFLAGS) sim3Main.c
 
  MetaDataAccess.o : MetaDataAccess.c MetaDataAccess.h
 	$(CC) $(CFLAGS) MetaDataAccess.c

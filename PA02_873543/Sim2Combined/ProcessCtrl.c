@@ -119,15 +119,6 @@ void simRun( ConfigDataType *configPtr, OpCodeType *currentPtr, char *timeStr )
          accessTimer( LAP_TIMER, timeStr );
          printf( "%s, OS: All processes now set in Ready state\n", timeStr );
 
-         // while( localNodePtr != NULL )
-         //    {
-         //       localNodePtr->stateOfProcess = READY;
-         //       localNodePtr = localNodePtr->next;
-         //    }
-        // localNodePtr = headNodePtr;//reset to first process.
-
-        //timeRemaining = calcRemainingTime( currentPtr, configPtr );
-
          accessTimer( LAP_TIMER, timeStr );
          printf( "%s, OS: Process %d selected with %d ms remaining\n", timeStr, localNodePtr->PID, timeRemaining );
 

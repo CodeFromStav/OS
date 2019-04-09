@@ -44,9 +44,10 @@ typedef struct PCB_LL
 	} PCB_LL;
 
 void *threadEntry( void *param);
-void threadSleeper ( int timeToWait, char *timeStr );
-PCB_LL *createPCB( ConfigDataType *configPtr, OpCodeType *currentPtr, char *timeStr );
 
+void threadSleeper ( int timeToWait, char *timeStr );
+
+PCB_LL *createPCB( ConfigDataType *configPtr, OpCodeType *currentPtr, char *timeStr );
 
 void simRun( ConfigDataType *configPtr, OpCodeType *currentPtr, char *timeStr );
 
@@ -56,8 +57,12 @@ void displayLoc( Boolean monitorFlag, Boolean fileFlag, char *str, ConfigDataTyp
 
 void outputProc( ConfigDataType *configPtr, OpCodeType *currentPtr, char *timeStr );
 
+void runBubbleSort( PCB_LL *startNodePtr );
+
+void swap( PCB_LL *ptrOne, PCB_LL *ptrTwo );
 
 int calcRemainingTime( OpCodeType *currentPtr , ConfigDataType *configPtr );
+
 //void logDump( ProgRun *pcb);
 
 #endif
