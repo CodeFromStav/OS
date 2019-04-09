@@ -138,7 +138,7 @@ void simRun( ConfigDataType *configPtr, OpCodeType *currentPtr, char *timeStr )
          //localNodePtr->progCounter = localNodePtr->progCounter->next;
 
 //start of main loop
-         while( (  localNodePtr->progCounter->next->opLtr != 'A' )
+         while( (  localNodePtr->progCounter->opLtr != 'A' )
              && ( compareString( localNodePtr->progCounter->opName, "end" ) != 0 ) ) //INNER PROG COUNTER
          {
             printf("asfsafsafsa");
