@@ -5,6 +5,53 @@
 
 
 
+void initialize( Queue *queue )
+{
+   queue->count = 0;
+   queue->head = NULL;
+   queue->tail = NULL;
+}
+
+int isEmpty( Queue *queue )
+{
+   return (queue->tail == NULL);
+}
+
+void enqueue( Queue *queue, int value )
+{
+   //if( queue->count < )    Do I need a capacity?
+
+   PCB_LL *tempNode;
+   tempNode = malloc( sizeof( PCB_LL ) );
+   tempNode->PID = value; //NEEDS TO FIX
+   tempNode->next = NULL;
+   if( !isEmpty( queue ) )
+   {
+      queue->tail->next = tempNode;
+      queue->tail = tempNode;
+   }
+   else
+   {
+      queue->head = queue->tail = tempNode;
+   }
+   queue->count++;
+   
+   //enqueueing a process 
+   //free during dequeue
+}
+
+int dequeue( Queue *queue )
+{
+   PCB_LL *tempNode;
+   int nodeVal = queue->head->PID;
+   tempNode = queue->head;
+   queue->head = queue->head->next;
+   queue->count--;
+   free( tempNode );
+   return nodeVal;
+}
+
+
 
 int scheduleNext( PCB_LL **pcb, int processNum, double *interrupts, char *scheduler )
 {
@@ -22,6 +69,8 @@ int scheduleNext( PCB_LL **pcb, int processNum, double *interrupts, char *schedu
    else if( compareString( scheduler, "SJF-N" ) )
    {
 
+      //runs processes with shortest time remaining
+      //use the bubble sort created
    }
 
 
@@ -29,6 +78,7 @@ int scheduleNext( PCB_LL **pcb, int processNum, double *interrupts, char *schedu
    //check if scheduler says "FCFS-P"
    else if( compareString( scheduler, "FCFS-P" ) )
    {
+      //
 
    }
 
@@ -37,6 +87,7 @@ int scheduleNext( PCB_LL **pcb, int processNum, double *interrupts, char *schedu
    //check if scheduler says "SRTF-P"
    else if( compareString( scheduler, "SRTF-P" ) )
    {
+      //
 
    }
 

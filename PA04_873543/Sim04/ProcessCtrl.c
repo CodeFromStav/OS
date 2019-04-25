@@ -76,17 +76,6 @@ PCB_LL *createPCB( ConfigDataType *configPtr, OpCodeType *currentPtr, char *time
 }
 
 
-void initialize( Queue *queue )
-{
-   queue->count = 0;
-   queue->head = NULL;
-   queue->tail = NULL;
-}
-
-int isEmpty( Queue *queue )
-{
-   return (queue->tail == NULL);
-}
 
 
  

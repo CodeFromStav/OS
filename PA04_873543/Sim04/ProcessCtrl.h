@@ -15,15 +15,6 @@
  } States;
 
 
-typedef struct Queue
-{
-
-	int count;
-	PCB_LL *head;
-	PCB_LL *tail;
-
-} Queue;
-
 
 
 typedef struct MMU
