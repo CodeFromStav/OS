@@ -4,8 +4,7 @@
 enum
 {
    NONE_READY = -666
-}
-;
+};
 
 
 

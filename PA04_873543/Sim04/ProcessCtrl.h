@@ -11,8 +11,19 @@
 //create enum with 5 states
  typedef enum 
  { 
-	 NEW, READY, RUNNING, WAITING, EXIT
+	 NEW, READY, RUNNING, WAITING, EXIT, BLOCKED
  } States;
+
+
+typedef struct Queue
+{
+
+	int count;
+	PCB_LL *head;
+	PCB_LL *tail;
+
+} Queue;
+
 
 
 typedef struct MMU
